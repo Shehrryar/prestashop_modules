@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>addifyexterafieldgeneratormodule</name>
+	<displayName><![CDATA[Addify Generate Extra field]]></displayName>
+	<version><![CDATA[1.0.0]]></version>
+	<description><![CDATA[the purpose of this module is to generate extra fields]]></description>
+	<author><![CDATA[Addify]]></author>
+	<tab><![CDATA[administration]]></tab>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+</module>
