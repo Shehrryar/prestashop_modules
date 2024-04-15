@@ -47,7 +47,7 @@
 				<input type="hidden" name="submitAddifyb2bregistrationformbuilderfields" value="1">
 				<div class="panel" id="fieldset_0">
 					<div class="panel-heading">
-						<i class="icon-plus"></i>{l s='Create new input field' mod='addifyb2bregistrationformbuilder'}
+						<i class="icon-plus"></i>{l s='Create Additional Fields for Registeration Form' mod='addifyb2bregistrationformbuilder'}
 					</div>
 					<div class="form-wrapper">
 						<div class="form-group hide">
@@ -129,6 +129,7 @@
 							</p>
 						</div>
 					</div>
+
 					<div class="form-group">
 						<label class="control-label col-lg-4">
 							{l s='Description' mod='addifyb2bregistrationformbuilder'}
@@ -138,6 +139,8 @@
 						rows="10"></textarea>
 					</div>
 					</div>
+
+					
 					<div class="form-group">
 						<label class="control-label col-lg-4">
 							{l s='Enable' mod='addifyb2bregistrationformbuilder'}

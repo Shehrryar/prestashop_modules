@@ -30,8 +30,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
 {
     public $id_field;
     public $active_field;
-    public $fieldtype;
-
+    public $field_type;
     public $placeholder;
     public $description;
     public $field_options;
@@ -46,7 +45,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
         'multilang' => true,
         'fields'    => array(
             'active_field'  => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
-            'fieldtype' => array('type' => self::TYPE_HTML),
+            'field_type' => array('type' => self::TYPE_HTML),
             'placeholder' => array('type' => self::TYPE_HTML),
             'description' => array('type' => self::TYPE_HTML),
             'field_options' => array('type' => self::TYPE_HTML),
@@ -65,31 +64,22 @@ class addifyexterafieldgeneratorclass extends ObjectModel
         if (!$id_field || empty($status)) {
             return false;
         }
-
         return (bool)Db::getInstance()->execute('UPDATE '._DB_PREFIX_.self::$definition['table'].'
-
             SET `'.pSQL($status).'` = !'.pSQL($status).'
-
             WHERE id_field = '.(int)$id_field);
-
     }
-
     public static function getMaxSortOrder()
     {
         $result = Db::getInstance()->ExecuteS('
             SELECT MAX(sort_order) AS sort_order
             FROM `'._DB_PREFIX_.'addifyformbuilderfields`');
-
         if (!$result) {
             return false;
         }
-
         foreach ($result as $res) {
             $result = $res['sort_order'];
         }
-
         $result = $result + 1;
-
         return $result;
     }
     public static function getlastfieldid()
