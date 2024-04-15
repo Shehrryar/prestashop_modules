@@ -26,6 +26,7 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
+include(dirname(__FILE__).'/classes/addifyexterafieldgeneratorclass.php');
 class Addifyexterafieldgeneratormodule extends Module
 {
     protected $config_form = false;
@@ -48,17 +49,15 @@ class Addifyexterafieldgeneratormodule extends Module
         $this->displayName = $this->l('Addify Generate Extra field');
         $this->description = $this->l('the purpose of this module is to generate extra fields');
 
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => '8.0');
+        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => '8.1.4');
     }
-
     /**
      * Don't forget to create update methods if needed:
      * http://doc.prestashop.com/display/PS16/Enabling+the+Auto-Update
      */
     public function install()
     {
-        Configuration::updateValue('ADDIFYEXTERAFIELDGENERATORMODULE_LIVE_MODE', false);
-
+        include(dirname(__FILE__).'/sql/install.php');
         return parent::install() &&
             $this->registerHook('header') &&
             $this->registerHook('displayBackOfficeHeader') &&
@@ -67,8 +66,7 @@ class Addifyexterafieldgeneratormodule extends Module
 
     public function uninstall()
     {
-        Configuration::deleteByName('ADDIFYEXTERAFIELDGENERATORMODULE_LIVE_MODE');
-
+        include(dirname(__FILE__).'/sql/uninstall.php');
         return parent::uninstall();
     }
     /**
@@ -96,9 +94,20 @@ class Addifyexterafieldgeneratormodule extends Module
 
         if (((bool) Tools::isSubmit('addregisteraddifyexterafieldgeneratormodule')) == true) {
 
-            return $this->registerationform();
-        }
+            $this->context->smarty->assign(array(
+                'configUrl'  => $this->context->link->getAdminLink('AdminModules', true). '&configure=' . $this->name,
+            ));
 
+            $output = $this->display(__FILE__, 'views/templates/admin/add_field.tpl');
+
+
+            return $output;
+
+            // return $this->registerationform();
+        }
+        if (((bool)Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields')) == true) {
+           $this->processFieldsSave();
+        } 
 
         if (((bool) Tools::isSubmit('addchekoutaddifyexterafieldgeneratormodule')) == true) {
 
@@ -107,6 +116,27 @@ class Addifyexterafieldgeneratormodule extends Module
         }
 
         return $this->display(__FILE__, 'views/templates/admin/configure.tpl');
+    }
+
+    public function select_list()
+    {
+        return array(
+            array('id_field' => 'text', 'fieldname' => $this->l('text')),
+            array('id_field' => 'textarea', 'fieldname' => $this->l('textarea')),
+            array('id_field' => 'number', 'fieldname' => $this->l('number')),
+            array('id_field' => 'email', 'fieldname' => $this->l('email')),
+            array('id_field' => 'password', 'fieldname' => $this->l('password')),
+            array('id_field' => 'radiobutton', 'fieldname' => $this->l('radiobutton')),
+            array('id_field' => 'Select', 'fieldname' => $this->l('select')),
+            array('id_field' => 'fileupload', 'fieldname' => $this->l('fileupload')),
+            array('id_field' => 'switch', 'fieldname' => $this->l('switch')),
+            array('id_field' => 'multiselect', 'fieldname' => $this->l('multiselect')),
+            array('id_field' => 'checkbox', 'fieldname' => $this->l('checkbox')),
+            array('id_field' => 'multicheckbox', 'fieldname' => $this->l('multicheckbox')),
+            array('id_field' => 'color', 'fieldname' => $this->l('color')),
+            array('id_field' => 'date', 'fieldname' => $this->l('date')),
+            array('id_field' => 'time', 'fieldname' => $this->l('time')),
+        );
     }
     protected function Checkoutpage()
     {
@@ -119,7 +149,7 @@ class Addifyexterafieldgeneratormodule extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'submitAddifyexterafieldgeneratormoduleModule';
+        $helper->submit_action = 'extracheckoutpagefiled';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
             . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -129,52 +159,54 @@ class Addifyexterafieldgeneratormodule extends Module
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
         );
-
         return $helper->generateForm(
             array(
                 array(
                     'form' => array(
                         'legend' => array(
-                            'title' => $this->l('Create Additional Fields for the Checkout Page'),
+                            'title' => $this->l('Create Additional Fields for the Checkout page'),
                             'icon' => 'icon-cogs'
                         ),
                         'input' => array(
                             array(
                                 'col' => 3,
                                 'type' => 'text',
-                                'desc' => $this->l('Registeration form field name'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME',
-                                'label' => $this->l('Label for "Additional Information" on the regestration form'),
+                                'name' => 'registertitlefield',
+                                'label' => $this->l('Field Title'),
+                                'placeholder' => $this->l('How do you know about us'),
                             ),
                             array(
-                                'type' => 'switch',
-                                'label' => $this->l('Enable/Disable Additional information page'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM',
-                                'is_bool' => true,
-                                'values' => array(
-                                    array(
-                                        'id' => 'active_on',
-                                        'value' => true,
-                                        'label' => $this->l('Enabled')
-                                    ),
-                                    array(
-                                        'id' => 'active_off',
-                                        'value' => false,
-                                        'label' => $this->l('Disabled')
-                                    )
+                                'type' => 'select',
+                                'label' => $this->l('Field Title'),
+                                'name' => 'fieldtypecheckout',
+                                'desc' => $this->l('Please mark page that you want to show popup'),
+                                'options' => array(
+                                    'query' => $this->select_list(),
+                                    'id' => 'id_field',
+                                    'name' => 'fieldname',
                                 ),
                             ),
                             array(
-                                'col' => 3,
                                 'type' => 'text',
-                                'desc' => $this->l('checkout field name'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_CHECKOUTPAGE',
-                                'label' => $this->l('Label for "Additional Information" on the checkout form'),
+                                'label' => $this->l('Input Options'),
+                                'name' => 'field_options',
+                                'placeholder' => 'value1->option1,value2->option2,value3->option3...',
+                                'desc' => $this->l('Seperate each value and option with -> and all options->values with comma sign and incase of file upload set the file extension as 1->png,2->docs etc..'),
+                                'col' => 5,
+                            ),
+
+                            array(
+                                'type' => 'textarea',
+                                'label' => $this->l('Description'),
+                                'name' => 'fieldtypedescription',
+                                'required' => false,
+                                'cols' => 60,
+                                'rows' => 10,
                             ),
                             array(
                                 'type' => 'switch',
-                                'label' => $this->l('Enable/Disable checkoutpage'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE',
+                                'label' => $this->l('Enable'),
+                                'name' => 'fieldenable',
                                 'is_bool' => true,
                                 'values' => array(
                                     array(
@@ -193,6 +225,14 @@ class Addifyexterafieldgeneratormodule extends Module
                         'submit' => array(
                             'title' => $this->l('Save'),
                         ),
+                        'buttons' => array(
+                            'cancel' => array(
+                                'title' => $this->l('Cancel'),
+                                'class' => 'btn btn-default',
+                                'icon' => 'process-icon-cancel',
+                                'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+                            ),
+                        )
                     ),
                 )
             )
@@ -289,7 +329,7 @@ class Addifyexterafieldgeneratormodule extends Module
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
 
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'submitAddifyexterafieldgeneratormoduleModule';
+        $helper->submit_action = 'extaregisterationformfiled';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
             . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
@@ -299,44 +339,6 @@ class Addifyexterafieldgeneratormodule extends Module
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
         );
-
-        $arry_fieldtype= array(
-            array(
-            'id_field' =>1,
-            'fieldname'=> 'text'    
-        ),
-        array(
-            'id_field' =>2,
-            'fieldname'=> 'checkbox'    
-        ),
-        array(
-            'id_field' =>3,
-            'fieldname'=> 'Radio'    
-        ),
-        array(
-            'id_field' =>4,
-            'fieldname'=> 'Select'    
-        ),
-        array(
-            'id_field' =>5,
-            'fieldname'=> 'Group'    
-        ),
-        array(
-            'id_field' =>6,
-            'fieldname'=> 'date'    
-        ),
-
-        array(
-            'id_field' =>7,
-            'fieldname'=> 'Switch'    
-        ),
-        array(
-            'id_field' => 8,
-            'fieldname' => 'textarea'
-        )
-
-    );
-
         return $helper->generateForm(
             array(
                 array(
@@ -359,10 +361,18 @@ class Addifyexterafieldgeneratormodule extends Module
                                 'name' => 'fieldtypecheckout',
                                 'desc' => $this->l('Please mark page that you want to show popup'),
                                 'options' => array(
-                                    'query' => $arry_fieldtype,
+                                    'query' => $this->select_list(),
                                     'id' => 'id_field',
                                     'name' => 'fieldname',
                                 ),
+                            ),
+                            array(
+                                'type' => 'text',
+                                'label' => $this->l('Input Options'),
+                                'name' => 'field_options',
+                                'placeholder' => 'value1->option1,value2->option2,value3->option3...',
+                                'desc' => $this->l('Seperate each value and option with -> and all options->values with comma sign and incase of file upload set the file extension as 1->png,2->docs etc..'),
+                                'col' => 5,
                             ),
                             array(
                                 'type' => 'textarea',
@@ -394,6 +404,14 @@ class Addifyexterafieldgeneratormodule extends Module
                         'submit' => array(
                             'title' => $this->l('Save'),
                         ),
+                        'buttons' => array(
+                            'cancel' => array(
+                                'title' => $this->l('Cancel'),
+                                'class' => 'btn btn-default',
+                                'icon' => 'process-icon-cancel',
+                                'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+                            ),
+                        )
                     ),
                 )
             )
@@ -566,6 +584,14 @@ class Addifyexterafieldgeneratormodule extends Module
                         'submit' => array(
                             'title' => $this->l('Save'),
                         ),
+                        'buttons' => array(
+                            'cancel' => array(
+                                'title' => $this->l('Cancel'),
+                                'class' => 'btn btn-default',
+                                'icon' => 'process-icon-cancel',
+                                'href' => AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules'),
+                            ),
+                        )
                     ),
                 )
             )
@@ -620,4 +646,88 @@ class Addifyexterafieldgeneratormodule extends Module
         /* Place your code here. */
         echo "this hook is for the additional information";
     }
+    protected function getConfigFieldsValues()
+
+    {
+        $fields_values = array();
+         if (Tools::getValue('id_field') && (Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields') === false)) {
+            $Addifyb2bregistrationformfieldsbuilderBlock = new addifyexterafieldgeneratorclass((int)Tools::getValue('id_field'));
+            $fields_values['id_field'] = $Addifyb2bregistrationformfieldsbuilderBlock->id_field;
+            $fields_values['active_field'] = $Addifyb2bregistrationformfieldsbuilderBlock->active_field;
+            $fields_values['field_options'] = $Addifyb2bregistrationformfieldsbuilderBlock->field_options;
+            $fields_values['placeholder'] = $Addifyb2bregistrationformfieldsbuilderBlock->placeholder;
+            $fields_values['field_name'] = $Addifyb2bregistrationformfieldsbuilderBlock->field_name;
+            $fields_values['field_type'] = $Addifyb2bregistrationformfieldsbuilderBlock->fieldtype;
+            $fields_values['description'] = $Addifyb2bregistrationformfieldsbuilderBlock->description;
+            $fields_values['sort_order'] = $Addifyb2bregistrationformfieldsbuilderBlock->sort_order;
+        } 
+        else 
+        {
+            $fields_values['id_field'] = (int)Tools::getValue('id_field');
+            $fields_values['active_field'] = (int)Tools::getValue('active_field');
+            $fields_values['field_options']  = Tools::getValue('field_options');
+            $fields_values['field_name'] = Tools::getValue('field_name');
+            $fields_values['placeholder'] = Tools::getValue('placeholder');
+            $fields_values['field_type'] = Tools::getValue('field_type');
+            $fields_values['description'] = Tools::getValue('description');
+             $fields_values['sort_order'] = Tools::getValue('sort_order');
+        }
+        return $fields_values;
+    }   
+    protected function processFieldsSave()
+    {
+        // $call_back = 'add';
+        $form_values = $this->getConfigFieldsValues(); 
+        if (!isset($form_values) && !$form_values) {
+            return $this->context->controller->errors[] = $this->l('Empty post values.');
+        }
+        
+        // if ($form_values['field_label']=='') {
+        //     return $this->context->controller->errors[] = $this->l('Input Field Label is Empty.');
+        // }
+        // if ($form_values['field_name']=='') {
+        //     return $this->context->controller->errors[] = $this->l('Input Field Name is Empty.');
+        // }
+        // if (count($this->context->controller->errors)) {
+        //     return $this->context->controller->errors;
+        // }
+        // if ($id_field = Tools::getValue('id_field')) {
+        //     $call_back = 'update'; 
+        //     $Addifyb2bregistrationformfieldsbuilderBlock = new addifyexterafieldgeneratorclass((int)$id_field);
+        //      $Addifyb2bregistrationformfieldsbuilderBlock->sort_order = $form_values['sort_order'];
+        // } else {
+        //     $Addifyb2bregistrationformfieldsbuilderBlock = new addifyexterafieldgeneratorclass();
+        //     $Addifyb2bregistrationformfieldsbuilderBlock->sort_order = addifyexterafieldgeneratorclass::getMaxSortOrder();
+        // }
+        // $Addifyb2bregistrationformfieldsbuilderBlock->field_label = $form_values['field_label'];
+        // $Addifyb2bregistrationformfieldsbuilderBlock->active_field = $form_values['active_field'];
+        // $Addifyb2bregistrationformfieldsbuilderBlock->field_type = $form_values['field_type'];
+        // $Addifyb2bregistrationformfieldsbuilderBlock->field_name = $form_values['field_name'];
+        // $Addifyb2bregistrationformfieldsbuilderBlock->place_holder = $form_values['place_holder'];
+        // $Addifyb2bregistrationformfieldsbuilderBlock->field_required = $form_values['field_required'];
+        // $inp_type = $form_values['field_type'];
+        // if (strrpos("text textarea number email password switch color date time",$inp_type) == '') {
+        //     $field_options_str = $form_values['field_options'];
+        //     $field_option_sep = explode(',', $field_options_str);
+        //     foreach ($field_option_sep as $key) {
+        //         $str_check = strrpos($key,"->");
+        //         if ($str_check == ''){
+        //             return $this->context->controller->errors[] = $this->l('invalid Pattern in Input Options.');
+        //         }
+        //         $options = explode('->', $key);
+        //         if ($options[0] == ''){
+        //             return $this->context->controller->errors[] = $this->l('invalid value in Input Options.');
+        //         } elseif ($options[1] == ''){
+        //             return $this->context->controller->errors[] = $this->l('invalid option in Input Options.');
+        //         } else {
+        //             $Addifyb2bregistrationformfieldsbuilderBlock->field_options = $form_values['field_options'];
+        //         }
+        //     }
+        // } else {
+        //     $Addifyb2bregistrationformfieldsbuilderBlock->field_options = $form_values['field_options'];
+        // }
+        // $Addifyb2bregistrationformfieldsbuilderBlock->id_form_group = $form_values['id_form_group'];
+        // if (!call_user_func(array($Addifyb2bregistrationformfieldsbuilderBlock, $call_back)))
+        //     $this->context->controller->errors = sprintf($this->l('Something went wrong while performing operation %s'), $call_back);
+        } 
 }
