@@ -24,12 +24,12 @@
 	*}
 	<script type="text/javascript">
 		function hideOptionField() {
-			var field_type = $("#field_type").val();
+			var field_type = $("#field_type_checkout").val();
 			if (field_type == 'checkbox' || field_type == 'radiobutton' || field_type == 'multiselect' || field_type == 'fileupload' || field_type == 'select' || field_type == 'multicheckbox') {
-				$("#field_options").parent().parent().show();
+				$("#field_options_checkout").parent().parent().show();
 			}
 			else {
-				$("#field_options").parent().parent().hide();
+				$("#field_options_checkout").parent().parent().hide();
 			}
 		}
 		$(document).ready(function () {
@@ -47,14 +47,14 @@
 				<input type="hidden" name="submitAddifyb2bregistrationformbuilderfields" value="1">
 				<div class="panel" id="fieldset_0">
 					<div class="panel-heading">
-						<i class="icon-plus"></i>{l s='Create Additional Fields for Registeration Form' mod='Addifyexterafieldgeneratormodule'}
+						<i class="icon-plus"></i>{l s='Create Additional Fields for Checkout Page' mod='Addifyexterafieldgeneratormodule'}
 					</div>
 					<div class="form-wrapper">
 						<div class="form-group hide">
-							<input type="hidden" name="id_field" id="id_field" value="0">
+							<input type="hidden" name="id_field_checkout" id="id_field_checkout" value="0">
 						</div>
 						<div class="form-group hide">
-							<input type="hidden" name="sort_order" id="sort_order" value="0">
+							<input type="hidden" name="sort_order_checkout" id="sort_order_checkout" value="0">
 						</div>
 					</div>
 					<div class="form-group">
@@ -62,7 +62,7 @@
 							{l s='Input Field Name' mod='Addifyexterafieldgeneratormodule'}
 						</label>
 						<div class="col-lg-5">
-							<input type="text" name="field_name" id="field_name" value="" class=""
+							<input type="text" name="field_name_checkout" id="field_name_checkout" value="" class=""
 								placeholder="Field_name">
 							<p class="help-block">
 								{l s='This should be unique for example:"name or middle_name" etc.'
@@ -75,7 +75,7 @@
 							{l s='Input Type' mod='Addifyexterafieldgeneratormodule'}
 						</label>
 						<div class="col-lg-2">
-							<select name="field_type" class=" fixed-width-xl" id="field_type"
+							<select name="field_type_checkout" class=" fixed-width-xl" id="field_type_checkout"
 								onchange="hideOptionField()">
 								<option value="text">{l s='text' mod='Addifyexterafieldgeneratormodule'}</option>
 								<option value="textarea">{l s='textarea' mod='Addifyexterafieldgeneratormodule'}
@@ -107,7 +107,7 @@
 							{l s='Placeholder' mod='Addifyexterafieldgeneratormodule'}
 						</label>
 						<div class="col-lg-5">
-							<input type="text" name="placeholder" id="placeholder" value="" class=""
+							<input type="text" name="placeholder_checkout" id="placeholder_checkout" value="" class=""
 								placeholder="placeholder">
 							<p class="help-block">
 								{l s='This should be unique for example:"name or middle_name" etc.'
@@ -120,7 +120,7 @@
 							{l s='Input Options' mod='Addifyexterafieldgeneratormodule'}
 						</label>
 						<div class="col-lg-5">
-							<input type="text" name="field_options" id="field_options" value="" class=""
+							<input type="text" name="field_options_checkout" id="field_options_checkout" value="" class=""
 								placeholder="value1->option1,value2->option2,value3->option3...">
 							<p class="help-block">
 								{l s='Seperate each value and option with -&gt; and all options-&gt;values with comma
@@ -135,7 +135,7 @@
 							{l s='Description' mod='Addifyexterafieldgeneratormodule'}
 						</label>
 						<div class="col-lg-5">
-					<textarea type="textarea" label="Description" name="description" required="false" cols="60"
+					<textarea type="textarea" label="Description" name="description_checkout" required="false" cols="60"
 						rows="10"></textarea>
 					</div>
 					</div>
@@ -164,7 +164,7 @@
 				</div><!-- /.form-wrapper -->
 				<div class="panel-footer">
 					<button type="submit" value="1" id="module_form_submit_btn"
-						name="submitAddifyb2bregistrationformbuilderfields" class="btn btn-default pull-right">
+						name="checkpagesubmission" class="btn btn-default pull-right">
 						<i class="process-icon-save"></i> {l s='Save' mod='Addifyexterafieldgeneratormodule'}
 					</button>
 					<a href="{$configUrl|escape:'htmlall':'UTF-8'}&amp;customlistingaddifyb2bregistrationformbuilder"

@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 $sql = array();
-$sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfields` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfields`(
 
     `id_field`    int(11) NOT NULL AUTO_INCREMENT,
     `sort_order`                    int(11),
@@ -39,6 +39,37 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfields`
     `active_field`                TINYINT(2),
     PRIMARY KEY  (`id_field`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' ._DB_PREFIX_.'addifyformbuilderfields_lang` (
+    `id_field`            INT(11) NOT NULL,
+    `id_lang`             INT(11) NOT NULL,
+    `field_label`         TEXT,
+    `place_holder`        TEXT,
+    PRIMARY KEY                     (`id_field`, `id_lang`)
+    ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfieldsforcheckoutpage` (
+
+    `id_field_checkout`    int(11) NOT NULL AUTO_INCREMENT,
+    `sort_order_checkout`                    int(11),
+    `field_name_checkout`                  TEXT,
+    `field_type_checkout`                  TEXT,
+    `placeholder_checkout`               TEXT,
+    `field_options_checkout`               TEXT,
+    `description_checkout`                TEXT,
+    `active_field_checkout`                TINYINT(2),
+    PRIMARY KEY  (`id_field_checkout`)
+) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' ._DB_PREFIX_.'addifyformbuilderfieldsforcheckoutpage_lang` (
+    `id_field_checkout`            INT(11) NOT NULL,
+    `id_lang`             INT(11) NOT NULL,
+    `field_label`         TEXT,
+    `place_holder`        TEXT,
+    PRIMARY KEY                     (`id_field_checkout`, `id_lang`)
+    ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;

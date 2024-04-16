@@ -29,6 +29,11 @@ if (!defined('_PS_VERSION_')) {
 }
 $sql = array();
 $sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfields';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfieldsforcheckoutpage';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfieldsforcheckoutpage_lang';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfields_lang';
+
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;
