@@ -40,7 +40,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table'     => 'addifyformbuilderfields',
+        'table'     => 'customfieldsbuilder',
         'primary'   => 'id_field',
         'multilang' => true,
         'fields'    => array(
@@ -56,7 +56,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
     public static function getListContent()
     {
         return DB::getInstance()->executes(
-            'SELECT * FROM `' . _DB_PREFIX_ . 'addifyformbuilderfields`'
+            'SELECT * FROM `' . _DB_PREFIX_ . 'customfieldsbuilder`'
         );
     }
     public static function setStatus($status, $id_field)
@@ -72,7 +72,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
     {
         $result = Db::getInstance()->ExecuteS('
             SELECT MAX(sort_order) AS sort_order
-            FROM `'._DB_PREFIX_.'addifyformbuilderfields`');
+            FROM `'._DB_PREFIX_.'customfieldsbuilder`');
         if (!$result) {
             return false;
         }
@@ -85,7 +85,7 @@ class addifyexterafieldgeneratorclass extends ObjectModel
     public static function getlastfieldid()
     {
         return Db::getInstance()->executeS('
-            SELECT `id_field` FROM `'._DB_PREFIX_.'addifyformbuilderfields` ORDER BY id_field DESC');
+            SELECT `id_field` FROM `'._DB_PREFIX_.'customfieldsbuilder` ORDER BY id_field DESC');
     }
 
 }

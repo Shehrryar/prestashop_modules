@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 $sql = array();
-$sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfields`(
+$sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'customfieldsbuilder`(
 
     `id_field`    int(11) NOT NULL AUTO_INCREMENT,
     `sort_order`                    int(11),
@@ -40,7 +40,7 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS`' . _DB_PREFIX_ . 'addifyformbuilderfields`
     PRIMARY KEY  (`id_field`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
-$sql[] = 'CREATE TABLE IF NOT EXISTS `' ._DB_PREFIX_.'addifyformbuilderfields_lang` (
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' ._DB_PREFIX_.'customfieldsbuilder_lang` (
     `id_field`            INT(11) NOT NULL,
     `id_lang`             INT(11) NOT NULL,
     `field_label`         TEXT,

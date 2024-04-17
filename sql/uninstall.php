@@ -28,10 +28,10 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 $sql = array();
-$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfields';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'customfieldsbuilder';
 $sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfieldsforcheckoutpage';
 $sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfieldsforcheckoutpage_lang';
-$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'addifyformbuilderfields_lang';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'customfieldsbuilder_lang';
 
 
 foreach ($sql as $query) {

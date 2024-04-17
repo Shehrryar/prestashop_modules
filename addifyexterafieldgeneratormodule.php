@@ -462,8 +462,7 @@ class Addifyexterafieldgeneratormodule extends Module
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
     }
     public function hookDisplayCustomerAccountForm()
-    {
-        $fields_values = array();
+    {      
            $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
         if(Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM') == 1){
             $this->context->smarty->assign(array(
