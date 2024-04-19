@@ -26,8 +26,8 @@
 if (!defined('_PS_VERSION_')) {
     exit;
 }
-include(dirname(__FILE__).'/classes/addifyexterafieldgeneratorclass.php');
-include(dirname(__FILE__).'/classes/addifyexterafieldcheckoutmodel.php');
+include (dirname(__FILE__) . '/classes/addifyexterafieldgeneratorclass.php');
+include (dirname(__FILE__) . '/classes/addifyexterafieldcheckoutmodel.php');
 
 class Addifyexterafieldgeneratormodule extends Module
 {
@@ -59,28 +59,32 @@ class Addifyexterafieldgeneratormodule extends Module
      */
     public function install()
     {
-        include(dirname(__FILE__).'/sql/install.php');
+
+        include (dirname(__FILE__) . '/sql/install.php');
+        $this->registerHook('AdditionalCustomerFormFields');
 
         return parent::install()
-        &&
+            && $this->registerHook('displayOverrideTemplate') &&
+            $this->registerHook('displayCustomerLoginFormAfter') &&
             $this->registerHook('header') &&
             $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('displayCustomerAccountForm');
     }
     public function uninstall()
     {
-        include(dirname(__FILE__).'/sql/uninstall.php');
+        include (dirname(__FILE__) . '/sql/uninstall.php');
         return parent::uninstall() &&
-        $this->unregisterHook('header') &&
-        $this->unregisterHook('displayBackOfficeHeader') &&
-        $this->unregisterHook('displayCustomerAccountForm');
+            $this->unregisterHook('header') &&
+            $this->unregisterHook('displayCustomerLoginFormAfter') &&
+            $this->unregisterHook('displayOverrideTemplate') &&
+            $this->unregisterHook('displayBackOfficeHeader') &&
+            $this->unregisterHook('displayCustomerAccountForm');
     }
     /**
      * Load the configuration form
      */
     public function getContent()
-    {     
-
+    {
         $active_tab = Tools::getValue('active_tab');
         if (!$active_tab) {
             $active_tab = 1;
@@ -91,14 +95,14 @@ class Addifyexterafieldgeneratormodule extends Module
                 'registerationformrenderList' => $this->registerationformrenderList(),
                 'checkoutformrenderList' => $this->checkoutpagerenderlist(),
                 'active_tab' => $active_tab,
-                'configUrl'  => $this->context->link->getAdminLink('AdminModules', true). '&configure=' . $this->name,
+                'configUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name,
             )
-        ); 
-        
-        if (((bool) Tools::isSubmit('updatecheckoutpage')) == true){
+        );
+
+        if (((bool) Tools::isSubmit('updatecheckoutpage')) == true) {
             $fields_values = array();
             if (Tools::getValue('id_field_checkout')) {
-                $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int)Tools::getValue('id_field_checkout'));
+                $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int) Tools::getValue('id_field_checkout'));
                 $fields_values['id_field_checkout'] = $addifyexterafieldcheckoutmodel->id_field_checkout;
                 $fields_values['active_field'] = $addifyexterafieldcheckoutmodel->active_field_checkout;
                 $fields_values['field_name_checkout'] = $addifyexterafieldcheckoutmodel->field_name_checkout;
@@ -108,10 +112,12 @@ class Addifyexterafieldgeneratormodule extends Module
                 $fields_values['description_checkout'] = $addifyexterafieldcheckoutmodel->description_checkout;
                 $fields_values['sort_order_checkout'] = $addifyexterafieldcheckoutmodel->sort_order_checkout;
             }
-            $this->context->smarty->assign(array(
-                'fields_value' => $fields_values,
-            ));
-            return $this->display(__FILE__, 'views/templates/admin/edit_field_checkout.tpl');            
+            $this->context->smarty->assign(
+                array(
+                    'fields_value' => $fields_values,
+                )
+            );
+            return $this->display(__FILE__, 'views/templates/admin/edit_field_checkout.tpl');
         }
         if (((bool) Tools::isSubmit('addcheckoutaddifyexterafieldgeneratormodule')) == true) {
             return $this->display(__FILE__, 'views/templates/admin/add_field_checkout.tpl');
@@ -130,7 +136,7 @@ class Addifyexterafieldgeneratormodule extends Module
         if (Tools::isSubmit('updateaddregisterationformdata')) {
             $fields_values = array();
             if (Tools::getValue('id_field')) {
-                $editadditionalfieldform = new addifyexterafieldgeneratorclass((int)Tools::getValue('id_field'));
+                $editadditionalfieldform = new addifyexterafieldgeneratorclass((int) Tools::getValue('id_field'));
                 $fields_values['id_field'] = $editadditionalfieldform->id_field;
                 $fields_values['active_field'] = $editadditionalfieldform->active_field;
                 $fields_values['field_name'] = $editadditionalfieldform->field_name;
@@ -140,15 +146,17 @@ class Addifyexterafieldgeneratormodule extends Module
                 $fields_values['description'] = $editadditionalfieldform->description;
                 $fields_values['sort_order'] = $editadditionalfieldform->sort_order;
             }
-            $this->context->smarty->assign(array(
-                'fields_value' => $fields_values,
-            ));
-            $output = $this->display(__FILE__,'views/templates/admin/edit_field.tpl');
-             return $output;
+            $this->context->smarty->assign(
+                array(
+                    'fields_value' => $fields_values,
+                )
+            );
+            $output = $this->display(__FILE__, 'views/templates/admin/edit_field.tpl');
+            return $output;
         }
-        if (((bool)Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields')) == true) {
-           $this->processFieldsSave();
-        } 
+        if (((bool) Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields')) == true) {
+            $this->processFieldsSave();
+        }
 
         if (((bool) Tools::isSubmit('addchekoutaddifyexterafieldgeneratormodule')) == true) {
 
@@ -449,7 +457,7 @@ class Addifyexterafieldgeneratormodule extends Module
     public function hookDisplayBackOfficeHeader()
     {
         if (Tools::getValue('configure') == $this->name) {
-            $this->context->controller->addJS($this->_path . 'views/js/back.js');
+            $this->context->controller->addJS($this->_path . 'views/js/back1.js');
             $this->context->controller->addCSS($this->_path . 'views/css/back.css');
         }
     }
@@ -461,22 +469,67 @@ class Addifyexterafieldgeneratormodule extends Module
         $this->context->controller->addJS($this->_path . '/views/js/front.js');
         $this->context->controller->addCSS($this->_path . '/views/css/front.css');
     }
-    public function hookDisplayCustomerAccountForm()
-    {      
-           $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
-        if(Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM') == 1){
-            $this->context->smarty->assign(array(
+
+    public function hookDisplayCustomerLoginFormAfter($customer)
+    {
+        $link = new Link;
+        $ctrl_form_link = $link->getModuleLink($this->name,'signupform');
+        $this->context->smarty->assign(
+            array(
+                'controller_link' => $ctrl_form_link,
+            )
+        );
+        return $this->context->smarty->fetch($this->local_path . 'views/templates/hook/loginpage-dropdown-menu.tpl');
+    }
+
+    public function hookDisplayOverrideTemplate($params)
+    {
+        $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
+        $this->context->smarty->assign(
+            array(
                 'additional_fields' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME'),
-                'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock
-            ));
-            return $this->display(__FILE__, 'views/templates/front/additional_fields.tpl');  
+                'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock,
+                'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
+            )
+        );
+        $type = Dispatcher::getInstance()->getController();
+        if (($type === 'authentication' || $type === 'registration') && ($params['template_file'] === 'customer/registration')) {
+            return _PS_MODULE_DIR_ .$this->name.'/views/templates/front/signupform.tpl';
         }
     }
+
+    public function hookDisplayCustomerAccountForm($params)
+    {
+        // $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
+        // $this->context->smarty->assign(
+        //     array(
+        //         'additional_fields' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME'),
+        //         'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock,
+        //         'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
+        //     )
+        // );
+        // return $this->display(__FILE__, 'views/templates/front/additional_fields.tpl');
+    }
+
+    public function hookAdditionalCustomerFormFields($params)
+    {
+        $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
+        $this->context->smarty->assign(
+            array(
+                'additional_fields' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME'),
+                'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock,
+                'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
+            )
+        );
+
+        return $this->display(__FILE__, 'views/templates/front/additional_fields.tpl');
+    }
+
     protected function getConfigFieldsValues()
     {
         $fields_values = array();
-         if (Tools::getValue('id_field') && (Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields') === false)) {
-            $Addifyb2bregistrationformfieldsbuilderBlock = new addifyexterafieldgeneratorclass((int)Tools::getValue('id_field'));
+        if (Tools::getValue('id_field') && (Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields') === false)) {
+            $Addifyb2bregistrationformfieldsbuilderBlock = new addifyexterafieldgeneratorclass((int) Tools::getValue('id_field'));
             $fields_values['active_field'] = $Addifyb2bregistrationformfieldsbuilderBlock->active_field;
             $fields_values['field_options'] = $Addifyb2bregistrationformfieldsbuilderBlock->field_options;
             $fields_values['placeholder'] = $Addifyb2bregistrationformfieldsbuilderBlock->placeholder;
@@ -484,23 +537,21 @@ class Addifyexterafieldgeneratormodule extends Module
             $fields_values['field_type'] = $Addifyb2bregistrationformfieldsbuilderBlock->field_type;
             $fields_values['description'] = $Addifyb2bregistrationformfieldsbuilderBlock->description;
             $fields_values['sort_order'] = $Addifyb2bregistrationformfieldsbuilderBlock->sort_order;
-        } 
-        else 
-        {
-            $fields_values['active_field'] = (int)Tools::getValue('active_field');
-            $fields_values['field_options']  = Tools::getValue('field_options');
+        } else {
+            $fields_values['active_field'] = (int) Tools::getValue('active_field');
+            $fields_values['field_options'] = Tools::getValue('field_options');
             $fields_values['field_name'] = Tools::getValue('field_name');
             $fields_values['placeholder'] = Tools::getValue('placeholder');
             $fields_values['field_type'] = Tools::getValue('field_type');
             $fields_values['description'] = Tools::getValue('description');
-             $fields_values['sort_order'] = Tools::getValue('sort_order');
+            $fields_values['sort_order'] = Tools::getValue('sort_order');
         }
         return $fields_values;
-    }   
+    }
     protected function processFieldsSave()
     {
         $call_back = 'add';
-        $form_values = $this->getConfigFieldsValues(); 
+        $form_values = $this->getConfigFieldsValues();
         // echo "<pre>";
         // print_r($form_values);
         // exit;
@@ -508,19 +559,19 @@ class Addifyexterafieldgeneratormodule extends Module
             return $this->context->controller->errors[] = $this->l('Empty post values.');
         }
 
-        if ($form_values['field_type']=='') {
+        if ($form_values['field_type'] == '') {
             return $this->context->controller->errors[] = $this->l('Input Field Label is Empty.');
         }
-        if ($form_values['field_name']=='') {
+        if ($form_values['field_name'] == '') {
             return $this->context->controller->errors[] = $this->l('Input Field Name is Empty.');
         }
         if (count($this->context->controller->errors)) {
             return $this->context->controller->errors;
         }
         if ($id_field = Tools::getValue('id_field')) {
-            $call_back = 'update'; 
-            $additionalresgisterationformfield = new addifyexterafieldgeneratorclass((int)$id_field);
-             $additionalresgisterationformfield->sort_order = $form_values['sort_order'];
+            $call_back = 'update';
+            $additionalresgisterationformfield = new addifyexterafieldgeneratorclass((int) $id_field);
+            $additionalresgisterationformfield->sort_order = $form_values['sort_order'];
         } else {
             $additionalresgisterationformfield = new addifyexterafieldgeneratorclass();
             $additionalresgisterationformfield->sort_order = addifyexterafieldgeneratorclass::getMaxSortOrder();
@@ -532,18 +583,18 @@ class Addifyexterafieldgeneratormodule extends Module
         $additionalresgisterationformfield->placeholder = $form_values['placeholder'];
         $additionalresgisterationformfield->description = $form_values['description'];
         $inp_type = $form_values['field_type'];
-        if (strrpos("text textarea number email password switch color date time",$inp_type) == '') {
+        if (strrpos("text textarea number email password switch color date time", $inp_type) == '') {
             $field_options_str = $form_values['field_options'];
             $field_option_sep = explode(',', $field_options_str);
             foreach ($field_option_sep as $key) {
-                $str_check = strrpos($key,"->");
-                if ($str_check == ''){
+                $str_check = strrpos($key, "->");
+                if ($str_check == '') {
                     return $this->context->controller->errors[] = $this->l('invalid Pattern in Input Options.');
                 }
                 $options = explode('->', $key);
-                if ($options[0] == ''){
+                if ($options[0] == '') {
                     return $this->context->controller->errors[] = $this->l('invalid value in Input Options.');
-                } elseif ($options[1] == ''){
+                } elseif ($options[1] == '') {
                     return $this->context->controller->errors[] = $this->l('invalid option in Input Options.');
                 } else {
                     $additionalresgisterationformfield->field_options = $form_values['field_options'];
@@ -562,53 +613,51 @@ class Addifyexterafieldgeneratormodule extends Module
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true) . '&conf=4&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name . '&active_tab=2');
             }
         }
-        } 
-        protected function getConfigFieldsValuesforcheckoutform()
-        {
-            $fields_values = array();
-             if (Tools::getValue('id_field_checkout') && (Tools::isSubmit('checkpagesubmission') === false)) {
-                $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int)Tools::getValue('id_field_checkout'));
-                $fields_values['active_field'] = $addifyexterafieldcheckoutmodel->active_field_checkout;
-                $fields_values['field_options_checkout']  = $addifyexterafieldcheckoutmodel->field_options_checkout;
-                $fields_values['field_name_checkout'] = $addifyexterafieldcheckoutmodel->field_name_checkout;
-                $fields_values['placeholder_checkout'] = $addifyexterafieldcheckoutmodel->placeholder_checkout;
-                $fields_values['field_type_checkout'] = $addifyexterafieldcheckoutmodel->field_type_checkout;
-                $fields_values['description_checkout'] = $addifyexterafieldcheckoutmodel->description_checkout;
-                 $fields_values['sort_order_checkout'] = $addifyexterafieldcheckoutmodel->sort_order_checkout;
-            } 
-            else 
-            {
-                $fields_values['active_field'] = (int)Tools::getValue('active_field');
-                $fields_values['field_options_checkout']  = Tools::getValue('field_options_checkout');
-                $fields_values['field_name_checkout'] = Tools::getValue('field_name_checkout');
-                $fields_values['placeholder_checkout'] = Tools::getValue('placeholder_checkout');
-                $fields_values['field_type_checkout'] = Tools::getValue('field_type_checkout');
-                $fields_values['description_checkout'] = Tools::getValue('description_checkout');
-                 $fields_values['sort_order_checkout'] = Tools::getValue('sort_order_checkout');
-            }
-            return $fields_values;
-        } 
-        protected function processFieldsSaveforcheckoutpage()
+    }
+    protected function getConfigFieldsValuesforcheckoutform()
+    {
+        $fields_values = array();
+        if (Tools::getValue('id_field_checkout') && (Tools::isSubmit('checkpagesubmission') === false)) {
+            $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int) Tools::getValue('id_field_checkout'));
+            $fields_values['active_field'] = $addifyexterafieldcheckoutmodel->active_field_checkout;
+            $fields_values['field_options_checkout'] = $addifyexterafieldcheckoutmodel->field_options_checkout;
+            $fields_values['field_name_checkout'] = $addifyexterafieldcheckoutmodel->field_name_checkout;
+            $fields_values['placeholder_checkout'] = $addifyexterafieldcheckoutmodel->placeholder_checkout;
+            $fields_values['field_type_checkout'] = $addifyexterafieldcheckoutmodel->field_type_checkout;
+            $fields_values['description_checkout'] = $addifyexterafieldcheckoutmodel->description_checkout;
+            $fields_values['sort_order_checkout'] = $addifyexterafieldcheckoutmodel->sort_order_checkout;
+        } else {
+            $fields_values['active_field'] = (int) Tools::getValue('active_field');
+            $fields_values['field_options_checkout'] = Tools::getValue('field_options_checkout');
+            $fields_values['field_name_checkout'] = Tools::getValue('field_name_checkout');
+            $fields_values['placeholder_checkout'] = Tools::getValue('placeholder_checkout');
+            $fields_values['field_type_checkout'] = Tools::getValue('field_type_checkout');
+            $fields_values['description_checkout'] = Tools::getValue('description_checkout');
+            $fields_values['sort_order_checkout'] = Tools::getValue('sort_order_checkout');
+        }
+        return $fields_values;
+    }
+    protected function processFieldsSaveforcheckoutpage()
     {
         $call_back = 'add';
-        $form_values = $this->getConfigFieldsValuesforcheckoutform(); 
+        $form_values = $this->getConfigFieldsValuesforcheckoutform();
         if (!isset($form_values) && !$form_values) {
             return $this->context->controller->errors[] = $this->l('Empty post values.');
         }
 
-        if ($form_values['field_type_checkout']=='') {
+        if ($form_values['field_type_checkout'] == '') {
             return $this->context->controller->errors[] = $this->l('Input Field Label is Empty.');
         }
-        if ($form_values['field_name_checkout']=='') {
+        if ($form_values['field_name_checkout'] == '') {
             return $this->context->controller->errors[] = $this->l('Input Field Name is Empty.');
         }
         if (count($this->context->controller->errors)) {
             return $this->context->controller->errors;
         }
         if ($id_field_checkout = Tools::getValue('id_field_checkout')) {
-            $call_back = 'update'; 
-            $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int)$id_field_checkout);
-             $addifyexterafieldcheckoutmodel->sort_order_checkout = $form_values['sort_order_checkout'];
+            $call_back = 'update';
+            $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel((int) $id_field_checkout);
+            $addifyexterafieldcheckoutmodel->sort_order_checkout = $form_values['sort_order_checkout'];
         } else {
             $addifyexterafieldcheckoutmodel = new addifyexterafieldcheckoutmodel();
             $addifyexterafieldcheckoutmodel->sort_order_checkout = addifyexterafieldcheckoutmodel::getMaxSortOrder();
@@ -620,18 +669,18 @@ class Addifyexterafieldgeneratormodule extends Module
         $addifyexterafieldcheckoutmodel->placeholder_checkout = $form_values['placeholder_checkout'];
         $addifyexterafieldcheckoutmodel->description_checkout = $form_values['description_checkout'];
         $inp_type = $form_values['field_type_checkout'];
-        if (strrpos("text textarea number email password switch color date time",$inp_type) == '') {
+        if (strrpos("text textarea number email password switch color date time", $inp_type) == '') {
             $field_options_str = $form_values['field_options_checkout'];
             $field_option_sep = explode(',', $field_options_str);
             foreach ($field_option_sep as $key) {
-                $str_check = strrpos($key,"->");
-                if ($str_check == ''){
+                $str_check = strrpos($key, "->");
+                if ($str_check == '') {
                     return $this->context->controller->errors[] = $this->l('invalid Pattern in Input Options.');
                 }
                 $options = explode('->', $key);
-                if ($options[0] == ''){
+                if ($options[0] == '') {
                     return $this->context->controller->errors[] = $this->l('invalid value in Input Options.');
-                } elseif ($options[1] == ''){
+                } elseif ($options[1] == '') {
                     return $this->context->controller->errors[] = $this->l('invalid option in Input Options.');
                 } else {
                     $addifyexterafieldcheckoutmodel->field_options_checkout = $form_values['field_options_checkout'];
@@ -640,7 +689,6 @@ class Addifyexterafieldgeneratormodule extends Module
         } else {
             $addifyexterafieldcheckoutmodel->field_options_checkout = $form_values['field_options_checkout'];
         }
-
         if (!call_user_func(array($addifyexterafieldcheckoutmodel, $call_back))) {
             $this->context->controller->errors = sprintf($this->l('Something went wrong while performing operation %s'), $call_back);
         } else {
@@ -650,6 +698,6 @@ class Addifyexterafieldgeneratormodule extends Module
                 Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true) . '&conf=4&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name . '&active_tab=3');
             }
         }
-    } 
+    }
 
 }
