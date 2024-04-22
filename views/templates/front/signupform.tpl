@@ -37,13 +37,20 @@
     </h1>
   </header> -->
 
+        <style>
+            .form-group-buttom {
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+
         <div id="content" class="page-content card card-block">
             <section class="register-form">
                 <p>{l s='Already have an account?' mod='addifyexterafieldgeneratormodule'} <a href="">{l s='Log in
                         instead!' mod='addifyexterafieldgeneratormodule'}</a></p>
 
-                <form class="default-plugin-form" id="default-plugin-form" action="" enctype="multipart/form-data"
-                    method="post" class="was-validated">
+                <form class="default-plugin-form" id="default-plugin-form" action="{$registeration_page_controller}"
+                    enctype="multipart/form-data" method="post" class="was-validated">
                     <!---------------------------------form-------------------------------------->
                     <div class="form-group row ">
                         <label class="col-md-3 form-control-label" for="field-Social_title_default">
@@ -157,112 +164,158 @@
                                 value="{$additional_fields|escape:'htmlall':'UTF-8'}">
                         </div>
                     </div>
-                    {foreach $fields_values as $field}
-                    {if $field['id_field'] = ''}
-                    <p>{l s='there are no custom fields for this user' mod='addifyexterafieldgeneratormodule'}</p>
-                    {/if}
-                    <!---------------------------------general field types-------------------------------------->
-
-                    {if $field['field_type'] == 'text' || $field['field_type'] == 'number' || $field['field_type'] ==
-                    'email' || $field['field_type'] == 'date' || $field['field_type'] == 'time' || $field['field_type']
-                    == 'color' }
-                    <div class="form-group row">
-                        <label
-                            class="col-md-3 form-control-label required">{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
-                        <div class="col-md-6">
-                            <input class="form-control"
-                                name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
-                                type="{$field['field_type']|escape:'htmlall':'UTF-8'}" value=""
-                                placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}">
-
-                        </div>
-                    </div>
-                    {/if}
-
-                    {if $field['field_type'] == 'password'}
-                    <div class="form-group row">
-                        <label
-                            class="col-md-3 form-control-label required">{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
-                        <div class="col-md-6">
-                            <div class="input-group js-parent-focus">
-                                <input class="form-control js-child-focus js-visible-password"
+                    <div class="form-group-buttom row">
+                        {foreach $fields_values as $field}
+                        <!---------------------------------general field types-------------------------------------->
+                        <div>
+                            <label
+                                class="col-md-3 form-control-label required">{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
+                            {if $field['field_type'] == 'text' || $field['field_type'] == 'number' ||
+                            $field['field_type']
+                            ==
+                            'email' || $field['field_type'] == 'date' || $field['field_type'] == 'time' ||
+                            $field['field_type']
+                            == 'color' }
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <input class="form-control"
                                     name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
                                     type="{$field['field_type']|escape:'htmlall':'UTF-8'}" value=""
-                                    aria-autocomplete="list"
                                     placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}">
-                                <span class="input-group-btn">
-                                    <button class="btn" type="button" data-action="show-password" data-text-show="Show"
-                                        data-text-hide="Hide">{l s='Show'
-                                        mod='addifyexterafieldgeneratormodule'}</button>
+
+                            </div>
+                            {/if}
+
+                            {if $field['field_type'] == 'password'}
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <div class="input-group js-parent-focus">
+                                    <input class="form-control js-child-focus js-visible-password"
+                                        name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
+                                        type="{$field['field_type']|escape:'htmlall':'UTF-8'}" value=""
+                                        aria-autocomplete="list"
+                                        placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}">
+                                    <span class="input-group-btn">
+                                        <button class="btn" type="button" data-action="show-password"
+                                            data-text-show="Show" data-text-hide="Hide">{l s='Show'
+                                            mod='addifyexterafieldgeneratormodule'}</button>
+                                    </span>
+                                </div>
+                            </div>
+                            {/if}
+
+                            <!---------------------------------textarea-------------------------------------->
+                            {if $field['field_type'] == 'textarea'}
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <textarea id="" class="form-control"
+                                    name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
+                                    autocomplete="off"
+                                    placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}"></textarea>
+                                <span class="form-control-comment">
+                                    {l s= $field['description']}
                                 </span>
                             </div>
-                        </div>
-                    </div>
-                    {/if}
+                            {/if}
 
-                    <!---------------------------------textarea-------------------------------------->
-                    {if $field['field_type'] == 'textarea'}
-                    <div class="form-group row ">
-                        <label
-                            class="col-md-3 form-control-label required">{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
-                        <div class="col-md-6">
-                            <textarea id="" class="form-control"
-                                name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
-                                autocomplete="off"
-                                placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}"></textarea>
-                            <span class="form-control-comment">
-                                {l s= $field['description']}
-                            </span>
-                        </div>
-                    </div>
-                    {/if}
+                            <!---------------------------------fileupload-------------------------------------->
 
-                    <!---------------------------------fileupload-------------------------------------->
-
-                    {if $field['field_type'] == 'fileupload'}
-                    <div class="form-group row ">
-                        <label class="col-md-3 ">{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
-                        <div class="col-md-6">
-                            <input type="file"
-                                name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
-                                id="file" class="" placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}">
-                            <span class="form-control-comment">
-                                {l s= $field['description']}
-                            </span>
-                        </div>
-                    </div>
-                    {/if}
-
-                    <!---------------------------------multicheckbox-------------------------------------->
-
-                    {if $field['field_type'] == 'multicheckbox'}
-                    <div class="row">
-                        <div class="col-md-3">
-                            <label>{$field['field_name']|escape:'htmlall':'UTF-8'}</label>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                <label>
-                                    <input type="checkbox"
-                                        name="{$field['type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}[]"
-                                        value=""> 
-                                </label>
+                            {if $field['field_type'] == 'fileupload'}
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <input type="file"
+                                    name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}"
+                                    id="file" class="" placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}">
+                                <span class="form-control-comment">
+                                    {l s= $field['description']}
+                                </span>
                             </div>
-                            {/foreach}
+                            {/if}
+
+                            <!---------------------------------multicheckbox-------------------------------------->
+
+                            {if $field['field_type'] == 'multicheckbox'}
+                            <div class="col-md-6">
+                                {assign var="teststring" value=$field['field_options']}
+                                {assign var="testsplit" value=","|explode:$teststring}
+                                {foreach $testsplit as $split}
+                                {assign var="subsplit" value="->"|explode:$split}
+                                <div class="form-check">
+                                    <label>
+                                        <input type="checkbox"
+                                            name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}[]"
+                                            value="{$subsplit[0]}">
+                                        <span class="label-text">{$subsplit[1]|escape:'htmlall':'UTF-8'}</span>
+                                    </label>
+                                </div>
+                                {/foreach}
+                            </div>
+                            {/if}
+
+                            <!---------------------------------RadioButton-------------------------------------->
+
+                            {if $field['field_type'] == 'radiobutton'}
+                            <div class="col-md-6">
+                                {assign var="teststring" value=$field['field_options']}
+                                {assign var="testsplit" value=","|explode:$teststring}
+                                {foreach $testsplit as $split}
+                                {assign var="subsplit" value="->"|explode:$split}
+                                <div class="form-check">
+                                    <label>
+                                        <input type="radio"
+                                            name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}[]"
+                                            value="{$subsplit[0]}">
+                                        <span class="label-text">{$subsplit[1]|escape:'htmlall':'UTF-8'}</span>
+                                    </label>
+                                </div>
+                                {/foreach}
+                            </div>
+                            {/if}
+
+
+                            <!---------------------------------multiselectbox-------------------------------------->
+
+                            {if $field['field_type'] == 'multiselect'}
+                            {assign var="teststring" value=$field['field_options']}
+                            {assign var="testsplit" value=","|explode:$teststring}
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <select
+                                    name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}[]"
+                                    class="form-control">
+                                    <option value="">Select the option</option>
+                                    {foreach $testsplit as $split}
+                                    {assign var="subsplit" value="->"|explode:$split}
+                                    <option value="{$subsplit[0]}">{$subsplit[1]}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            {/if}
+
+                            <!---------------------------------multiselectbox-------------------------------------->
+                            
+                            {if $field['field_type'] == 'select'}
+                            {assign var="teststring" value=$field['field_options']}
+                            {assign var="testsplit" value=","|explode:$teststring}
+                            <div class="col-md-6 js-input-column form-control-valign">
+                                <select
+                                    name="{$field['field_type']|escape:'htmlall':'UTF-8'}{$field['id_field']|escape:'htmlall':'UTF-8'}[]"
+                                    class="form-control">
+                                    <option value="">Select the option</option>
+                                    {foreach $testsplit as $split}
+                                    {assign var="subsplit" value="->"|explode:$split}
+                                    <option value="{$subsplit[0]}">{$subsplit[1]}</option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            {/if}
+                        </div>
+                        <!---------------------------------button-------------------------------------->
+                        {/foreach}
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <button name="submitnewdefaultsignupform"
+                                    class="btn btn-primary form-control-submit float-xs-right" type="submit"
+                                    id="form_save"> {l s='Save' mod='addifyexterafieldgeneratormodule'}</button>
+                            </div>
                         </div>
                     </div>
                     {/if}
-
-
-                    <!---------------------------------multicheckbox-------------------------------------->
-
-
-
-                    {/foreach}
-                    {/if}
-
-
-
                 </form>
 
 

@@ -28,6 +28,8 @@ if (!defined('_PS_VERSION_')) {
 }
 include (dirname(__FILE__) . '/classes/addifyexterafieldgeneratorclass.php');
 include (dirname(__FILE__) . '/classes/addifyexterafieldcheckoutmodel.php');
+include (dirname(__FILE__) . '/classes/addifyextrafieldcustomerdata.php');
+
 
 class Addifyexterafieldgeneratormodule extends Module
 {
@@ -40,17 +42,13 @@ class Addifyexterafieldgeneratormodule extends Module
         $this->version = '1.0.0';
         $this->author = 'Addify';
         $this->need_instance = 0;
-
         /**
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
          */
         $this->bootstrap = true;
-
         parent::__construct();
-
         $this->displayName = $this->l('Addify Generate Extra field');
         $this->description = $this->l('the purpose of this module is to generate extra fields');
-
         $this->ps_versions_compliancy = array('min' => '1.6', 'max' => '8.1.4');
     }
     /**
@@ -59,15 +57,15 @@ class Addifyexterafieldgeneratormodule extends Module
      */
     public function install()
     {
-
         include (dirname(__FILE__) . '/sql/install.php');
         $this->registerHook('AdditionalCustomerFormFields');
-
         return parent::install()
             && $this->registerHook('displayOverrideTemplate') &&
             $this->registerHook('displayCustomerLoginFormAfter') &&
             $this->registerHook('header') &&
             $this->registerHook('displayBackOfficeHeader') &&
+            $this->registerHook('displayAdminCustomers') &&
+
             $this->registerHook('displayCustomerAccountForm');
     }
     public function uninstall()
@@ -78,7 +76,10 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->unregisterHook('displayCustomerLoginFormAfter') &&
             $this->unregisterHook('displayOverrideTemplate') &&
             $this->unregisterHook('displayBackOfficeHeader') &&
+            $this->unregisterHook('displayAdminCustomers') &&
             $this->unregisterHook('displayCustomerAccountForm');
+
+            
     }
     /**
      * Load the configuration form
@@ -98,7 +99,6 @@ class Addifyexterafieldgeneratormodule extends Module
                 'configUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name,
             )
         );
-
         if (((bool) Tools::isSubmit('updatecheckoutpage')) == true) {
             $fields_values = array();
             if (Tools::getValue('id_field_checkout')) {
@@ -473,7 +473,7 @@ class Addifyexterafieldgeneratormodule extends Module
     public function hookDisplayCustomerLoginFormAfter($customer)
     {
         $link = new Link;
-        $ctrl_form_link = $link->getModuleLink($this->name,'signupform');
+        $ctrl_form_link = $link->getModuleLink($this->name, 'signupform');
         $this->context->smarty->assign(
             array(
                 'controller_link' => $ctrl_form_link,
@@ -484,9 +484,12 @@ class Addifyexterafieldgeneratormodule extends Module
 
     public function hookDisplayOverrideTemplate($params)
     {
+        $link = new Link;
+        $ctrl_form_link = $link->getModuleLink($this->name, 'signupform');
         $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
         $this->context->smarty->assign(
             array(
+                'registeration_page_controller' => $ctrl_form_link,
                 'additional_fields' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME'),
                 'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock,
                 'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
@@ -494,7 +497,7 @@ class Addifyexterafieldgeneratormodule extends Module
         );
         $type = Dispatcher::getInstance()->getController();
         if (($type === 'authentication' || $type === 'registration') && ($params['template_file'] === 'customer/registration')) {
-            return _PS_MODULE_DIR_ .$this->name.'/views/templates/front/signupform.tpl';
+            return _PS_MODULE_DIR_ . $this->name . '/views/templates/front/signupform.tpl';
         }
     }
 
@@ -509,6 +512,15 @@ class Addifyexterafieldgeneratormodule extends Module
         //     )
         // );
         // return $this->display(__FILE__, 'views/templates/front/additional_fields.tpl');
+    }
+    public function hookDisplayAdminCustomers($params) // show data on customer detail page (backoffice)
+    {
+        
+        $this->context->smarty->assign(
+            array(
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/admin/customerhistoryformdisplay.tpl');
     }
 
     public function hookAdditionalCustomerFormFields($params)

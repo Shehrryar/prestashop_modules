@@ -70,6 +70,18 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' ._DB_PREFIX_.'addifyformbuilderfieldsfor
     PRIMARY KEY                     (`id_field_checkout`, `id_lang`)
     ) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'addifycustomercustomdataforregisterationform` (
+        `id_data`                     int(11) NOT NULL AUTO_INCREMENT,
+        `id_customer`                 int(11) NOT NULL,
+        `id_field`                    int(11) NOT NULL,
+        `field_label`                 TEXT,
+        `field_type`                  TEXT,
+        `field_options`               TEXT,
+        `field_name`                  TEXT,
+        `field_value`                 TEXT,
+        PRIMARY KEY  (`id_data`)
+    ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;

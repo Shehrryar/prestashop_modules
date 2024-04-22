@@ -93,7 +93,7 @@
 
 
                     {elseif $values['field_type'] == 'fileupload'}
-                    <div class="col-md-6 js-input-column">
+                    <div class="col-md-6 js-input-column form-control-valign">
                         <input type="file" class="form-control" name="$values['field_type']">
                         {if $values['description']}
                         <span class="form-control-comment">{l s= $values['description']
@@ -104,7 +104,7 @@
                     {elseif $values['field_type'] == 'checkbox'}
                     {assign var="teststring" value=$values['field_options']}
                     {assign var="testsplit" value=","|explode:$teststring}
-                    <div class="col-md-6 js-input-column">
+                    <div class="col-md-6 js-input-column form-control-valign">
                     {foreach $testsplit as $split}
                         {assign var="subsplit" value="->"|explode:$split}
                     <div>
