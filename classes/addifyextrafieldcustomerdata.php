@@ -36,7 +36,6 @@ class addifyextrafieldcustomerdata extends ObjectModel
     public $field_name;
     public $field_value;
     public $field_label;
-
     /**
      * @see ObjectModel::$definition
      */
@@ -51,8 +50,6 @@ class addifyextrafieldcustomerdata extends ObjectModel
             'field_name' => array('type' => self::TYPE_HTML),
             'field_value' => array('type' => self::TYPE_HTML),
             'field_label' => array('type' => self::TYPE_HTML),
-
-            
         )
     );
     public static function getfieldsbycustomerid($customer_id)
@@ -67,6 +64,5 @@ class addifyextrafieldcustomerdata extends ObjectModel
             SELECT *
             FROM `'._DB_PREFIX_.'addifycustomercustomdataforregisterationform` WHERE `id_customer` = '.(int)$customer_id.' AND `id_form_group` = '.(int)$name_suffix_bb.'');
     }
-
 }
 

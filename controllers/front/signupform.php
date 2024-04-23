@@ -140,12 +140,9 @@ class addifyexterafieldgeneratormodulesignupformModuleFrontController extends Mo
                 $AddifyregistrationformcustomdataClass->save();
                 //     //////////////////////////////customer registration///////////////////////
             }
-
             $this->context->controller->success = sprintf('Customer is registered Sucessfully');
             $this->redirectWithNotifications($this->context->shop->getBaseURL(true));
             $this->setTemplate('module:addifyexterafieldgeneratormodule/views/templates/front/emptyfile.tpl');
         }
     }
-
-
 }
