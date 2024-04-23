@@ -28,9 +28,6 @@
     {block name='page_content'}
 
     <section id="main">
-
-
-
         <!-- <header class="page-header">
     <h1>
     Welcome To Registration Page
@@ -268,7 +265,6 @@
                             </div>
                             {/if}
 
-
                             <!---------------------------------multiselectbox-------------------------------------->
 
                             {if $field['field_type'] == 'multiselect'}
@@ -281,7 +277,7 @@
                                     <option value="">Select the option</option>
                                     {foreach $testsplit as $split}
                                     {assign var="subsplit" value="->"|explode:$split}
-                                    <option value="{$subsplit[0]}">{$subsplit[1]}</option>
+                                    <option value="{$subsplit[1]}">{$subsplit[1]}</option>
                                     {/foreach}
                                 </select>
                             </div>
@@ -305,7 +301,9 @@
                             </div>
                             {/if}
                         </div>
+
                         <!---------------------------------button-------------------------------------->
+
                         {/foreach}
                         <div class="row">
                             <div class="col-sm-12 text-right">
@@ -322,6 +320,4 @@
             </section>
         </div>
     </section>
-
-
     {/block}

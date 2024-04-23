@@ -82,6 +82,19 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'addifycustomercustomdat
         PRIMARY KEY  (`id_data`)
     ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
+
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'addifycheckoutcustomdataforcheckoutpage` (
+        `checkout_id_data`                     int(11) NOT NULL AUTO_INCREMENT,
+        `checkout_id_customer`                 int(11) NOT NULL,
+        `checkout_id_field`                    int(11) NOT NULL,
+        `checkout_field_label`                 TEXT,
+        `checkout_field_type`                  TEXT,
+        `checkout_field_options`               TEXT,
+        `checkout_field_name`                  TEXT,
+        `checkout_field_value`                 TEXT,
+        PRIMARY KEY  (`checkout_id_data`)
+    ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;

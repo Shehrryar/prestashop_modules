@@ -65,8 +65,16 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->registerHook('header') &&
             $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('displayAdminCustomers') &&
+            $this->registerHook('displayCustomerAccountForm') &&
+            $this->registerHook('displayBeforeCarrier');
+            // $this->registerHook('displayAfterPayment');
 
-            $this->registerHook('displayCustomerAccountForm');
+            
+            // $this->registerHook('displayAddressSelectorBottom') &&
+            // $this->registerHook('displayAfterCarrier') &&
+            // $this->registerHook('displayBeforeCarrier') &&
+            // $this->registerHook('displayCarrierExtraContent') &&
+            // $this->registerHook('displayCartExtraProductActions');
     }
     public function uninstall()
     {
@@ -77,9 +85,17 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->unregisterHook('displayOverrideTemplate') &&
             $this->unregisterHook('displayBackOfficeHeader') &&
             $this->unregisterHook('displayAdminCustomers') &&
-            $this->unregisterHook('displayCustomerAccountForm');
+            $this->unregisterHook('displayCustomerAccountForm')&&
+            $this->unregisterHook('displayBeforeCarrier');
+            // $this->unregisterHook('displayAfterPayment');
 
-            
+
+
+            // $this->unregisterHook('displayAddressSelectorBottom') &&
+            // $this->unregisterHook('displayAfterCarrier') &&
+            // $this->unregisterHook('displayBeforeCarrier beforeCarrier') &&
+            // $this->unregisterHook('displayCarrierExtraContent') &&
+            // $this->unregisterHook('displayCartExtraProductActions');
     }
     /**
      * Load the configuration form
@@ -515,14 +531,48 @@ class Addifyexterafieldgeneratormodule extends Module
     }
     public function hookDisplayAdminCustomers($params) // show data on customer detail page (backoffice)
     {
-        
+        $customerdatabytheirid = addifyextrafieldcustomerdata::getfieldsbycustomerid($this->context->customer->id);
         $this->context->smarty->assign(
             array(
+                "customer_additional_data" => $customerdatabytheirid
             )
         );
         return $this->display(__FILE__, 'views/templates/admin/customerhistoryformdisplay.tpl');
     }
-
+    public function hookDisplayBeforeCarrier($params)
+    {
+        $link = $this->context->link->getModuleLink($this->name, 'checkoutform');
+        $checkoutpage_additional_fields = addifyexterafieldcheckoutmodel::getListContent();
+        $this->context->smarty->assign(
+            array(
+                "checkoutpage_additional_fields" => $checkoutpage_additional_fields,
+                'CHECKOUTPAGE_TITLE' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_CHECKOUTPAGE'),
+                'ENABLECHECKOUTPAGE' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE'),
+                'checkoutcontroller' => $link,
+            )
+        );
+        return $this->display(__FILE__, 'views/templates/front/checkoutpage.tpl');
+    }
+    // function hookDisplayAddressSelectorBottom()
+    // {
+    //     echo "hejkasdklsajdlajdl";
+    // }
+    // function hookDisplayAfterCarrier()
+    // {
+    //     echo "hejkasdklsajdlajdl";
+    // }
+    // function hookDisplayBeforeCarrier()
+    // {
+    //     echo "hejkasdklsajdlajdl";
+    // }
+    // function hookDisplayCarrierExtraContent()
+    // {
+    //     echo "hejkasdklsajdlajdl";
+    // }
+    // function hookDisplayCartExtraProductActions()
+    // {
+    //     echo "hejkasdklsajdlajdl";
+    // }
     public function hookAdditionalCustomerFormFields($params)
     {
         $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
@@ -533,10 +583,8 @@ class Addifyexterafieldgeneratormodule extends Module
                 'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
             )
         );
-
         return $this->display(__FILE__, 'views/templates/front/additional_fields.tpl');
     }
-
     protected function getConfigFieldsValues()
     {
         $fields_values = array();
@@ -564,9 +612,6 @@ class Addifyexterafieldgeneratormodule extends Module
     {
         $call_back = 'add';
         $form_values = $this->getConfigFieldsValues();
-        // echo "<pre>";
-        // print_r($form_values);
-        // exit;
         if (!isset($form_values) && !$form_values) {
             return $this->context->controller->errors[] = $this->l('Empty post values.');
         }
@@ -711,5 +756,4 @@ class Addifyexterafieldgeneratormodule extends Module
             }
         }
     }
-
 }
