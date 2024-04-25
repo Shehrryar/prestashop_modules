@@ -30,7 +30,6 @@
       {$CHECKOUTPAGE_TITLE}
       <span class="step-edit text-muted"><i class="material-icons edit">mode_edit</i> Edit</span>
     </h1>
-
     <div class="content">
         <form class="default-plugin-form" id="default-plugin-form" action="{$checkoutcontroller}"
         enctype="multipart/form-data" method="post" class="was-validated">
@@ -38,7 +37,7 @@
                     <div class="form-group-buttom row">
                         {foreach $checkoutpage_additional_fields as $field}
                         <!---------------------------------general field types-------------------------------------->
-                        <div>
+                        <div class = "innercontent" style="display: flex;">
                             <label
                                 class="col-md-3 form-control-label required">{$field['field_name_checkout']|escape:'htmlall':'UTF-8'}</label>
                             {if $field['field_type_checkout'] == 'text' || $field['field_type_checkout'] == 'number' ||
@@ -79,9 +78,9 @@
                                 <textarea id="" class="form-control"
                                     name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}"
                                     autocomplete="off"
-                                    placeholder="{$field['placeholder']|escape:'htmlall':'UTF-8'}"></textarea>
+                                    placeholder="{$field['placeholder_checkout']|escape:'htmlall':'UTF-8'}"></textarea>
                                 <span class="form-control-comment">
-                                    {l s= $field['description']}
+                                    {l s= $field['description_checkout']}
                                 </span>
                             </div>
                             {/if}
@@ -123,15 +122,15 @@
 
                             {if $field['field_type_checkout'] == 'radiobutton'}
                             <div class="col-md-6">
-                                {assign var="teststring" value=$field['field_options']}
+                                {assign var="teststring" value=$field['field_options_checkout']}
                                 {assign var="testsplit" value=","|explode:$teststring}
                                 {foreach $testsplit as $split}
                                 {assign var="subsplit" value="->"|explode:$split}
                                 <div class="form-check">
                                     <label>
                                         <input type="radio"
-                                            name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}[]"
-                                            value="{$subsplit[0]}">
+                                            name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}"
+                                            value="{$subsplit[1]}">
                                         <span class="label-text">{$subsplit[1]|escape:'htmlall':'UTF-8'}</span>
                                     </label>
                                 </div>

@@ -28,41 +28,53 @@ if (!defined('_PS_VERSION_')) {
 }
 class addifycheckoutcustomdataforcheckoutpage extends ObjectModel
 {
-    public $checkout_id_data;
-    public $checkout_id_customer;
-    public $checkout_id_field;
-    public $check_out_field_type;
-    public $check_out_field_options;
-    public $check_out_field_name;
-    public $check_out_field_value;
-    public $check_out_field_label;
+    public $id_data_checkout;
+    public $id_customer_checkout;
+    public $id_field_checkout;
+    public $id_cart_checkout;
+    public $id_order_checkout;
+    public $field_type_checkout;
+    public $field_options_checkout;
+    public $field_name_checkout;
+    public $field_value_checkout;
+    public $field_label_checkout;
     /**
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table'     => 'addifycustomercustomdataforregisterationform',
-        'primary'   => 'checkout_id_data',
+        'table'     => 'addifycheckoutcustomdataforcheckoutpage',
+        'primary'   => 'id_data_checkout',
         'fields'    => array(
-            'checkout_id_customer'  => array('type' => self::TYPE_HTML),
-            'checkout_id_field' => array('type' => self::TYPE_HTML),
-            'checkout_field_type'  => array('type' => self::TYPE_HTML),
-            'checkout_field_options' => array('type' => self::TYPE_HTML),
-            'checkout_field_name' => array('type' => self::TYPE_HTML),
-            'checkout_field_value' => array('type' => self::TYPE_HTML),
-            'checkout_field_label' => array('type' => self::TYPE_HTML),
+            'id_customer_checkout' => array('type' => self::TYPE_HTML),
+            'id_field_checkout' => array('type' => self::TYPE_HTML),
+            'id_cart_checkout' => array('type' => self::TYPE_HTML),
+            'id_order_checkout' => array('type' => self::TYPE_HTML),
+            'field_type_checkout' => array('type' => self::TYPE_HTML),
+            'field_options_checkout' => array('type' => self::TYPE_HTML),
+            'field_name_checkout' => array('type' => self::TYPE_HTML),
+            'field_value_checkout' => array('type' => self::TYPE_HTML),
+            'field_label_checkout' => array('type' => self::TYPE_HTML),
         )
     );
     public static function getfieldsbycustomerid($customer_id)
     {
         return Db::getInstance()->executeS('
             SELECT *
-            FROM `'._DB_PREFIX_.'addifycheckoutcustomdataforcheckoutpage` WHERE `checkout_id_customer` = '.(int)$customer_id.'');
+            FROM `'._DB_PREFIX_.'addifycheckoutcustomdataforcheckoutpage` WHERE `id_customer_checkout` = '.(int)$customer_id.'');
     }
     public static function getfieldsbyid($customer_id , $name_suffix_bb)
     {
         return Db::getInstance()->executeS('
             SELECT *
-            FROM `'._DB_PREFIX_.'addifycheckoutcustomdataforcheckoutpage` WHERE `checkout_id_customer` = '.(int)$customer_id.' AND `id_form_group` = '.(int)$name_suffix_bb.'');
+            FROM `'._DB_PREFIX_.'addifycheckoutcustomdataforcheckoutpage` WHERE `id_customer_checkout` = '.(int)$customer_id.' AND `id_form_group` = '.(int)$name_suffix_bb.'');
     }
+
+    public static function getorderdetail($checkout_cart_id)
+    {
+        return Db::getInstance()->executeS('
+            SELECT *
+            FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int)$checkout_cart_id.'');            
+    }
+    
 }
 

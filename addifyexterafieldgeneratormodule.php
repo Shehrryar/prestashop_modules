@@ -29,6 +29,8 @@ if (!defined('_PS_VERSION_')) {
 include (dirname(__FILE__) . '/classes/addifyexterafieldgeneratorclass.php');
 include (dirname(__FILE__) . '/classes/addifyexterafieldcheckoutmodel.php');
 include (dirname(__FILE__) . '/classes/addifyextrafieldcustomerdata.php');
+include (dirname(__FILE__) . '/classes/addifycheckoutcustomdataforcheckoutpage.php');
+
 
 
 class Addifyexterafieldgeneratormodule extends Module
@@ -66,7 +68,9 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('displayAdminCustomers') &&
             $this->registerHook('displayCustomerAccountForm') &&
-            $this->registerHook('displayBeforeCarrier');
+            $this->registerHook('displayBeforeCarrier')&&
+            // $this->registerHook('displayAdminOrder');
+            $this->registerHook('displayOrderConfirmation');
             // $this->registerHook('displayAfterPayment');
 
             
@@ -86,7 +90,11 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->unregisterHook('displayBackOfficeHeader') &&
             $this->unregisterHook('displayAdminCustomers') &&
             $this->unregisterHook('displayCustomerAccountForm')&&
-            $this->unregisterHook('displayBeforeCarrier');
+            $this->unregisterHook('displayBeforeCarrier')&&
+            // $this->unregisterHook('displayAdminOrder');
+            $this->unregisterHook('displayOrderConfirmation');
+
+
             // $this->unregisterHook('displayAfterPayment');
 
 
@@ -375,6 +383,24 @@ class Addifyexterafieldgeneratormodule extends Module
                         ),
                         'input' => array(
                             array(
+                                'type' => 'switch',
+                                'label' => $this->l('Enable/Disable Additional information page'),
+                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM',
+                                'is_bool' => true,
+                                'values' => array(
+                                    array(
+                                        'id' => 'active_on',
+                                        'value' => true,
+                                        'label' => $this->l('Enabled')
+                                    ),
+                                    array(
+                                        'id' => 'active_off',
+                                        'value' => false,
+                                        'label' => $this->l('Disabled')
+                                    )
+                                ),
+                            ),
+                            array(
                                 'col' => 3,
                                 'type' => 'text',
                                 'desc' => $this->l('Registeration form field name'),
@@ -383,8 +409,8 @@ class Addifyexterafieldgeneratormodule extends Module
                             ),
                             array(
                                 'type' => 'switch',
-                                'label' => $this->l('Enable/Disable Additional information page'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM',
+                                'label' => $this->l('Enable/Disable checkoutpage'),
+                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE',
                                 'is_bool' => true,
                                 'values' => array(
                                     array(
@@ -406,24 +432,7 @@ class Addifyexterafieldgeneratormodule extends Module
                                 'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_CHECKOUTPAGE',
                                 'label' => $this->l('Label for "Additional Information" on the checkout form'),
                             ),
-                            array(
-                                'type' => 'switch',
-                                'label' => $this->l('Enable/Disable checkoutpage'),
-                                'name' => 'ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE',
-                                'is_bool' => true,
-                                'values' => array(
-                                    array(
-                                        'id' => 'active_on',
-                                        'value' => true,
-                                        'label' => $this->l('Enabled')
-                                    ),
-                                    array(
-                                        'id' => 'active_off',
-                                        'value' => false,
-                                        'label' => $this->l('Disabled')
-                                    )
-                                ),
-                            ),
+
                         ),
                         'submit' => array(
                             'title' => $this->l('Save'),
@@ -498,6 +507,22 @@ class Addifyexterafieldgeneratormodule extends Module
         return $this->context->smarty->fetch($this->local_path . 'views/templates/hook/loginpage-dropdown-menu.tpl');
     }
 
+    public function hookDisplayOrderConfirmation($params){
+        $addifycheckout = addifycheckoutcustomdataforcheckoutpage::getfieldsbycustomerid($this->context->customer->id);
+        foreach($addifycheckout as $val){
+        $orderdetial = addifycheckoutcustomdataforcheckoutpage::getorderdetail($val['id_cart_checkout']);
+        }
+        $this->context->smarty->assign(
+            array(
+                'addifycheckout' => $addifycheckout,
+                'orderdetial' => $orderdetial,
+                'CHECKOUTPAGE_TITLE' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_CHECKOUTPAGE'),
+                'ENABLECHECKOUTPAGE' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE'),
+            )
+        );
+        return $this->context->smarty->fetch($this->local_path . 'views/templates/front/orderdetail.tpl');
+    }
+
     public function hookDisplayOverrideTemplate($params)
     {
         $link = new Link;
@@ -534,7 +559,7 @@ class Addifyexterafieldgeneratormodule extends Module
         $customerdatabytheirid = addifyextrafieldcustomerdata::getfieldsbycustomerid($this->context->customer->id);
         $this->context->smarty->assign(
             array(
-                "customer_additional_data" => $customerdatabytheirid
+                "customer_additional_data" => $customerdatabytheirid,
             )
         );
         return $this->display(__FILE__, 'views/templates/admin/customerhistoryformdisplay.tpl');

@@ -84,15 +84,15 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'addifycustomercustomdat
 
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'addifycheckoutcustomdataforcheckoutpage` (
-        `checkout_id_data`                     int(11) NOT NULL AUTO_INCREMENT,
-        `checkout_id_customer`                 int(11) NOT NULL,
-        `checkout_id_field`                    int(11) NOT NULL,
-        `checkout_field_label`                 TEXT,
-        `checkout_field_type`                  TEXT,
-        `checkout_field_options`               TEXT,
-        `checkout_field_name`                  TEXT,
-        `checkout_field_value`                 TEXT,
-        PRIMARY KEY  (`checkout_id_data`)
+        `id_data_checkout`                     int(11) NOT NULL AUTO_INCREMENT,
+        `id_customer_checkout`                 int(11) NOT NULL,
+        `id_field_checkout`                    int(11) NOT NULL,
+        `field_label_checkout`                 TEXT,
+        `field_type_checkout`                  TEXT,
+        `field_options_checkout`               TEXT,
+        `field_name_checkout`                  TEXT,
+        `field_value_checkout`                 TEXT,
+        PRIMARY KEY  (`id_data_checkout`)
     ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
 foreach ($sql as $query) {

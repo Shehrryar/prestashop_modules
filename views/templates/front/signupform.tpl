@@ -28,12 +28,6 @@
     {block name='page_content'}
 
     <section id="main">
-        <!-- <header class="page-header">
-    <h1>
-    Welcome To Registration Page
-    </h1>
-  </header> -->
-
         <style>
             .form-group-buttom {
                 display: flex;

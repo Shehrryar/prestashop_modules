@@ -51,7 +51,21 @@ class addifyexterafieldgeneratormodulesignupformModuleFrontController extends Mo
                     $value = '';
                 }
                 $fieldsubmitted[$active_field['field_type'] . $active_field['id_field']] = $value;
-            } else {
+            } 
+            elseif ($active_field['field_type'] == 'fileupload'){
+                if ((isset($_FILES[$active_field['field_type'].$active_field['id_field']]) == true) )
+                    $target_dir = _PS_MODULE_DIR_.'addifyexterafieldgeneratormodule/views/uploads/';
+                    $target_file = $target_dir.basename($_FILES[$active_field['field_type'].$active_field['id_field']]["name"]);
+                    if ((file_exists($target_file)) || ($uploadOk == 1)) {
+                        $temp = explode(".", $_FILES[$active_field['field_type'].$active_field['id_field']]["name"]);
+                        $newfilename = round(microtime(true)) . '.' . end($temp);
+                        if (move_uploaded_file($_FILES[$active_field['field_type'].$active_field['id_field']]["tmp_name"], $target_dir . $newfilename)) {
+                            $fieldsubmitted[$active_field['field_type'].$active_field['id_field']] = $newfilename;
+                        }
+                    }
+                }
+
+            else {
                 $fieldsubmitted[$active_field['field_type'] . $active_field['id_field']] = Tools::getValue($active_field['field_type'] . $active_field['id_field']);
             }
         }
