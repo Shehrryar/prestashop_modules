@@ -75,6 +75,12 @@ class addifycheckoutcustomdataforcheckoutpage extends ObjectModel
             SELECT *
             FROM `'._DB_PREFIX_.'orders` WHERE `id_cart` = '.(int)$checkout_cart_id.'');            
     }
+    public static function getDataByFieldAndCart($id_customer, $id_field, $cart_id)
+    {
+        return Db::getInstance()->executeS('
+            SELECT *
+            FROM `'._DB_PREFIX_.'addifycheckoutcustomdataforcheckoutpage` WHERE `id_customer_checkout` = '.(int)$id_customer.' AND `id_cart_checkout` = '.(int)$cart_id.' AND `id_field_checkout` = '.(int)$id_field.'');
+    }
     
 }
 

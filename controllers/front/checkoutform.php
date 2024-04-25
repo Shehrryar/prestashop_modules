@@ -30,76 +30,67 @@ class addifyexterafieldgeneratormodulecheckoutformModuleFrontController extends 
         return $fields_value;
     }
 
-    function process_save_break()
-    {
-        $fields = array();
-        $fields_value = $this->getchekoutcusomfieldsvalue();
-        $id_customer = $this->context->customer->id;
-        $fields = addifyexterafieldcheckoutmodel::getListContent();
-        $fieldsubmitted = $fields_value['fields'];
-        $addifycheckout = addifycheckoutcustomdataforcheckoutpage::getfieldsbycustomerid($id_customer);
-        foreach ($fields as $field) {
-            $id_field = $field['id_field_checkout'];
-            $name = $field['field_type_checkout'];
-            $column_name = $name . $id_field;
-            if (($fieldsubmitted[$column_name]) == "") {
-            } else {
-                foreach ($addifycheckout as $values_exist) {
-                    if ($values_exist['id_cart_checkout'] == $this->context->cart->id) {
-                        $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage($this->context->cart->id);
-                        $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
-                        $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
-                        $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $this->context->cart->id;
-                        $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
-                        $addifycheckoutcustomdataforcheckoutpage->update();
-                    } else {
-                        $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage();
-                        $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
-                        $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
-                        $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $this->context->cart->id;
-                        $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
-                        $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
-                        $addifycheckoutcustomdataforcheckoutpage->save();
-                    }
-                }
-            }
-        }
-        Tools::redirect($this->context->shop->getBaseURL(true) . 'order');
-    }
     function process_save()
     {
         $fields_value = $this->getchekoutcusomfieldsvalue();
-        $id_customer = $this->context->customer->id;
         $fields = addifyexterafieldcheckoutmodel::getListContent();
         $fieldsubmitted = $fields_value['fields'];
-        $addifycheckout = addifycheckoutcustomdataforcheckoutpage::getfieldsbycustomerid($id_customer);
-
+        $id_customer = $this->context->customer->id;
+        $cart_id = $this->context->cart->id;
         foreach ($fields as $field) {
             $id_field = $field['id_field_checkout'];
             $name = $field['field_type_checkout'];
             $column_name = $name . $id_field;
 
-            // Check if the field has a value submitted
+            // Check if data exists for the current field
             if (!empty($fieldsubmitted[$column_name])) {
-                $value_exists = false;
-
-                // Check if corresponding data exists in $addifycheckout
-                foreach ($addifycheckout as $values_exist) {
-                    if ($values_exist['id_cart_checkout'] == $this->context->cart->id) {
-                        $value_exists = true;
-                        break; // No need to continue searching
-                    }
-                }
-                // Create or update the record based on $value_exists
+                $existing_entry = addifycheckoutcustomdataforcheckoutpage::getDataByFieldAndCart($id_customer, $id_field, $cart_id);
                 $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage();
+                // Set common data for both update and save
                 $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
+                $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
+                $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $cart_id;
+                $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
+                $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
+                $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
+                $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
+                $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
+    
+                if ($existing_entry) {
+                   foreach($existing_entry as $edit_entry){
+                    $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage($edit_entry['id_data_checkout']);
+                    $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
+                    $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
+                    $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $cart_id;
+                    $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
+                    $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
+                    $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
+                    $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
+                    $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
+                    $addifycheckoutcustomdataforcheckoutpage->update();
+                   }
+                } else {
+                    // If data doesn't exist, save a new entry
+                    $addifycheckoutcustomdataforcheckoutpage->save();
+                }
+            }
+        }
+        // Redirect to the order page after processing
+        Tools::redirect($this->context->shop->getBaseURL(true) . 'order');
+    }
+    
+    function process_save_break()
+    {
+        $fields_value = $this->getchekoutcusomfieldsvalue();
+        $fields = addifyexterafieldcheckoutmodel::getListContent();
+        $fieldsubmitted = $fields_value['fields'];
+        foreach ($fields as $field) {
+            $id_field = $field['id_field_checkout'];
+            $name = $field['field_type_checkout'];
+            $column_name = $name . $id_field;
+            if (!empty($fieldsubmitted[$column_name])){
+                $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage();
+                $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $this->context->customer->id;
                 $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
                 $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $this->context->cart->id;
                 $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
@@ -107,16 +98,37 @@ class addifyexterafieldgeneratormodulecheckoutformModuleFrontController extends 
                 $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
                 $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
                 $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
+                $addifycheckoutcustomdataforcheckoutpage->save();
 
-                if ($value_exists) {
-                    echo "values already exist";
-                    $addifycheckoutcustomdataforcheckoutpage->update();
-                } else {
-                    $addifycheckoutcustomdataforcheckoutpage->save();
-                }
+                // foreach ($addifycheckout as $values_exist) {
+                //     if ($values_exist['id_cart_checkout'] == $this->context->cart->id) {
+                //         $id_data_checkout = $values_exist['id_data_checkout'];
+                //         $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage((int) $id_data_checkout);
+                //         $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
+                //         $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
+                //         $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $this->context->cart->id;
+                //         $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
+                //         $addifycheckoutcustomdataforcheckoutpage->update();
+                //     } else {
+                //         $addifycheckoutcustomdataforcheckoutpage = new addifycheckoutcustomdataforcheckoutpage();
+                //         $addifycheckoutcustomdataforcheckoutpage->id_customer_checkout = $id_customer;
+                //         $addifycheckoutcustomdataforcheckoutpage->id_field_checkout = $id_field;
+                //         $addifycheckoutcustomdataforcheckoutpage->id_cart_checkout = $this->context->cart->id;
+                //         $addifycheckoutcustomdataforcheckoutpage->field_label_checkout = pSQL($field['field_name_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_type_checkout = pSQL($field['field_type_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_options_checkout = pSQL($field['field_options_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_name_checkout = pSQL($field['field_type_checkout']);
+                //         $addifycheckoutcustomdataforcheckoutpage->field_value_checkout = pSQL($fieldsubmitted[$column_name]);
+                //         $addifycheckoutcustomdataforcheckoutpage->save();
+                //     }
+                // }
             }
         }
-        // Tools::redirect($this->context->shop->getBaseURL(true) . 'order');
+        Tools::redirect($this->context->shop->getBaseURL(true) . 'order');
     }
 
 }

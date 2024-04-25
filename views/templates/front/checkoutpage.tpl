@@ -102,7 +102,7 @@
 
                             {if $field['field_type_checkout'] == 'multicheckbox'}
                             <div class="col-md-6">
-                                {assign var="teststring" value=$field['field_options']}
+                                {assign var="teststring" value=$field['field_options_checkout']}
                                 {assign var="testsplit" value=","|explode:$teststring}
                                 {foreach $testsplit as $split}
                                 {assign var="subsplit" value="->"|explode:$split}
@@ -110,7 +110,7 @@
                                     <label>
                                         <input type="checkbox"
                                             name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}[]"
-                                            value="{$subsplit[0]}">
+                                            value="{$subsplit[1]}">
                                         <span class="label-text">{$subsplit[1]|escape:'htmlall':'UTF-8'}</span>
                                     </label>
                                 </div>
@@ -129,7 +129,7 @@
                                 <div class="form-check">
                                     <label>
                                         <input type="radio"
-                                            name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}"
+                                            name="{$field['field_type_checkout']|escape:'htmlall':'UTF-8'}{$field['id_field_checkout']|escape:'htmlall':'UTF-8'}[]"
                                             value="{$subsplit[1]}">
                                         <span class="label-text">{$subsplit[1]|escape:'htmlall':'UTF-8'}</span>
                                     </label>
