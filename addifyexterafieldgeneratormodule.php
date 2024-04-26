@@ -30,13 +30,9 @@ include (dirname(__FILE__) . '/classes/addifyexterafieldgeneratorclass.php');
 include (dirname(__FILE__) . '/classes/addifyexterafieldcheckoutmodel.php');
 include (dirname(__FILE__) . '/classes/addifyextrafieldcustomerdata.php');
 include (dirname(__FILE__) . '/classes/addifycheckoutcustomdataforcheckoutpage.php');
-
-
-
 class Addifyexterafieldgeneratormodule extends Module
 {
     protected $config_form = false;
-
     public function __construct()
     {
         $this->name = 'addifyexterafieldgeneratormodule';
@@ -71,9 +67,7 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->registerHook('displayBeforeCarrier')&&
             // $this->registerHook('displayAdminOrder');
             $this->registerHook('displayOrderConfirmation');
-            // $this->registerHook('displayAfterPayment');
-
-            
+            // $this->registerHook('displayAfterPayment');            
             // $this->registerHook('displayAddressSelectorBottom') &&
             // $this->registerHook('displayAfterCarrier') &&
             // $this->registerHook('displayBeforeCarrier') &&
@@ -93,12 +87,7 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->unregisterHook('displayBeforeCarrier')&&
             // $this->unregisterHook('displayAdminOrder');
             $this->unregisterHook('displayOrderConfirmation');
-
-
             // $this->unregisterHook('displayAfterPayment');
-
-
-
             // $this->unregisterHook('displayAddressSelectorBottom') &&
             // $this->unregisterHook('displayAfterCarrier') &&
             // $this->unregisterHook('displayBeforeCarrier beforeCarrier') &&
@@ -153,9 +142,7 @@ class Addifyexterafieldgeneratormodule extends Module
             $this->processFieldsSaveforcheckoutpage();
         }
         if (((bool) Tools::isSubmit('addregisteraddifyexterafieldgeneratormodule')) == true) {
-            $output = $this->display(__FILE__, 'views/templates/admin/add_field.tpl');
-            return $output;
-            // return $this->registerationform();
+            return $this->display(__FILE__, 'views/templates/admin/add_field.tpl');
         }
         if (Tools::isSubmit('updateaddregisterationformdata')) {
             $fields_values = array();
@@ -181,11 +168,8 @@ class Addifyexterafieldgeneratormodule extends Module
         if (((bool) Tools::isSubmit('submitAddifyb2bregistrationformbuilderfields')) == true) {
             $this->processFieldsSave();
         }
-
         if (((bool) Tools::isSubmit('addchekoutaddifyexterafieldgeneratormodule')) == true) {
-
             return $this->Checkoutpage();
-
         }
         return $this->display(__FILE__, 'views/templates/admin/configure.tpl');
     }
@@ -198,7 +182,6 @@ class Addifyexterafieldgeneratormodule extends Module
             array('id_field' => 'email', 'fieldname' => $this->l('email')),
             array('id_field' => 'password', 'fieldname' => $this->l('password')),
             array('id_field' => 'radiobutton', 'fieldname' => $this->l('radiobutton')),
-            array('id_field' => 'Select', 'fieldname' => $this->l('select')),
             array('id_field' => 'fileupload', 'fieldname' => $this->l('fileupload')),
             array('id_field' => 'switch', 'fieldname' => $this->l('switch')),
             array('id_field' => 'multiselect', 'fieldname' => $this->l('multiselect')),
@@ -212,7 +195,6 @@ class Addifyexterafieldgeneratormodule extends Module
     public function checkoutpagerenderlist()
     {
         $data = addifyexterafieldcheckoutmodel::getListContent();
-
         $fields_list = array(
             'id_field_checkout' => array(
                 'title' => $this->l('Field ID'),
