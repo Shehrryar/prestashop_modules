@@ -550,6 +550,7 @@ information. * * @author PrestaShop SA
     var addifyb2bregistrationformbuilderfieldsslides = $(
       ".addifyb2bregistrationformbuilderfields > tbody"
     );
+
     addifyb2bregistrationformbuilderfieldsslides
       .sortable({
         cursor: "move",

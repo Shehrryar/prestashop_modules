@@ -25,11 +25,8 @@
  */
 
 if (!defined('_PS_VERSION_')) {
-
     exit;
-
 }
-
 class AdminExtrafieldController extends ModuleAdminController
 {
 
@@ -46,7 +43,6 @@ class AdminExtrafieldController extends ModuleAdminController
     {
         // Initialize $success variable
         $success = true;
-    
         // Get the ordered data from the request
         $items = json_decode(Tools::getValue('ordered_data'),true);
         // Check if items array is not empty
@@ -63,7 +59,6 @@ class AdminExtrafieldController extends ModuleAdminController
                     array('sort_order' => $i),
                     '`id_field` = ' . (int)$itemId
                 );
-    
                 $i++;
             }
         } else {
