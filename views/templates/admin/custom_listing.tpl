@@ -107,8 +107,8 @@
 								</thead>
 
 								<tbody class="ui-sortable">
-									{if isset($allRules) AND $allRules}
-				                    {foreach from=$allRules item=Rule}
+									{if isset($all_rules) AND $all_rules}
+				                    {foreach from=$all_rules item=Rule}
 									<tr class=" odd" id="item_{$Rule['id_field']|escape:'htmlall':'UTF-8'}">
 										<td class="row-selector text-center">
 											<input type="checkbox" name="addifyb2bregistrationformbuilderfieldsBox[]" value="{$Rule['id_field']|escape:'htmlall':'UTF-8'}" class="noborder addifyb2bregistrationformbuilderfieldsBox">

@@ -88,5 +88,11 @@ class addifyexterafieldgeneratorclass extends ObjectModel
             SELECT `id_field` FROM `'._DB_PREFIX_.'customfieldsbuilder` ORDER BY id_field DESC');
     }
 
+    public static function deletefield($id_field)
+    {
+        return Db::getInstance()->execute('DELETE FROM '._DB_PREFIX_.'customfieldsbuilder WHERE id_field ='. $id_field);
+        // return $this->d
+    }
+
 }
 

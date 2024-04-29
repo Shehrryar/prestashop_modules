@@ -103,13 +103,19 @@ class Addifyexterafieldgeneratormodule extends Module
         if (!$active_tab) {
             $active_tab = 1;
         }
+        $data = addifyexterafieldgeneratorclass::getListContent();
+        usort($data, function($a, $b) {
+            return $a['sort_order'] <=> $b['sort_order'];
+        });
         $this->context->smarty->assign(
             array(
-                'render_confriguration_form' => $this->renderForm(),
-                'registerationformrenderList' => $this->registerationformrenderList(),
-                'checkoutformrenderList' => $this->checkoutpagerenderlist(),
-                'active_tab' => $active_tab,
-                'configUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name,
+                    'adminToken' => Tools::getAdminTokenLite('AdminModules'),
+                    'admincontrollerlink' => $this->context->link->getAdminLink('AdminExtrafield'),
+                    'render_confriguration_form' => $this->renderForm(),
+                    'registerationformrenderList'=>$data,
+                    'checkoutformrenderList' => addifyexterafieldcheckoutmodel::getListContent(),
+                    'active_tab' => $active_tab,
+                    'configUrl' => $this->context->link->getAdminLink('AdminModules', true) . '&configure=' . $this->name,
             )
         );
         if (((bool) Tools::isSubmit('updatecheckoutpage')) == true) {
@@ -131,6 +137,13 @@ class Addifyexterafieldgeneratormodule extends Module
                 )
             );
             return $this->display(__FILE__, 'views/templates/admin/edit_field_checkout.tpl');
+        }
+
+        
+
+        if (((bool) Tools::isSubmit('deleteregisterationformdata')) == true) {
+            addifyexterafieldgeneratorclass::deletefield((int) Tools::getValue('id_field'));
+            Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true) . '&conf=3&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name . '&active_tab=2');
         }
         if (((bool) Tools::isSubmit('addcheckoutaddifyexterafieldgeneratormodule')) == true) {
             return $this->display(__FILE__, 'views/templates/admin/add_field_checkout.tpl');
@@ -210,13 +223,6 @@ class Addifyexterafieldgeneratormodule extends Module
             ),
             'field_type_checkout' => array(
                 'title' => $this->l('Field Type'),
-                'width' => 140,
-                'type' => 'text',
-                'search' => false,
-                'orderby' => false
-            ),
-            'sort_order_checkout' => array(
-                'title' => $this->l('Position'),
                 'width' => 140,
                 'type' => 'text',
                 'search' => false,
@@ -464,6 +470,9 @@ class Addifyexterafieldgeneratormodule extends Module
     public function hookDisplayBackOfficeHeader()
     {
         if (Tools::getValue('configure') == $this->name) {
+            Media::addJsDef(array(
+                'admincontrollerlink' => $this->context->link->getAdminLink('AdminAddifyb2bregistrationformbuildersetting'),
+                ));
             $this->context->controller->addJS($this->_path . 'views/js/back1.js');
             $this->context->controller->addCSS($this->_path . 'views/css/back.css');
         }
@@ -494,6 +503,7 @@ class Addifyexterafieldgeneratormodule extends Module
         foreach($addifycheckout as $val){
         $orderdetial = addifycheckoutcustomdataforcheckoutpage::getorderdetail($val['id_cart_checkout']);
         }
+        if(!empty($this->context->customer->id)){
         $this->context->smarty->assign(
             array(
                 'addifycheckout' => $addifycheckout,
@@ -502,19 +512,33 @@ class Addifyexterafieldgeneratormodule extends Module
                 'ENABLECHECKOUTPAGE' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ENABLECHECKOUTPAGE'),
             )
         );
+    }
+    else{
+        $this->context->smarty->assign(
+            array(
+                'addifycheckout' => '',
+                'orderdetial' => '',
+                'CHECKOUTPAGE_TITLE' => '',
+                'ENABLECHECKOUTPAGE' => '',
+            )
+        );
+    }
         return $this->context->smarty->fetch($this->local_path . 'views/templates/front/orderdetail.tpl');
     }
 
     public function hookDisplayOverrideTemplate($params)
     {
+        $data = addifyexterafieldgeneratorclass::getListContent();
+        usort($data, function($a, $b) {
+            return $a['sort_order'] <=> $b['sort_order'];
+        });
         $link = new Link;
         $ctrl_form_link = $link->getModuleLink($this->name, 'signupform');
-        $Addifyb2bregistrationformfieldsbuilderBlock = addifyexterafieldgeneratorclass::getListContent();
         $this->context->smarty->assign(
             array(
                 'registeration_page_controller' => $ctrl_form_link,
                 'additional_fields' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ACCOUNT_NAME'),
-                'fields_values' => $Addifyb2bregistrationformfieldsbuilderBlock,
+                'fields_values' => $data,
                 'congriguraion_val' => Configuration::get('ADDIFYEXTERAFIELDGENERATORMODULE_ADDITIONALFORM'),
             )
         );
